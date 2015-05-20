@@ -9,6 +9,9 @@ function h($str){
     return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 
+require_once('../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
 /*
 // 使用するディレクトリ
 define("C_DIR", "/Users/owner/htdocs_s/MA/");
