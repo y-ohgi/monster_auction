@@ -30,5 +30,5 @@ $sql = 'SELECT rm_id, rm_title, rm_ppl, rm_max FROM room_master WHERE rm_stat = 
 $stmt = $dbh->query($sql);
 $roomlist = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$jlist = json_encode($roomlist);
+$jlist = json_encode($roomlist, JSON_UNESCAPED_UNICODE);
 echo $jlist;

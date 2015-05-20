@@ -36,7 +36,7 @@ function endProces($id, $msg){
     $respons['room_id'] = $id;
     $respons['message'] = $msg;
 
-    echo json_encode($respons);
+    echo json_encode($respons, JSON_UNESCAPED_UNICODE);
     exit();
 }
 
