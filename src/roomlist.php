@@ -4,10 +4,13 @@
 require_once('init.php');
 require_once('db_connect.php');
 
+require_once('../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
 // room一覧の連想配列
 $roomlist = array();
 // rm_statをclosedにするまでの制限時間
-$closelimit = 20;
+$closelimit = 24;
 $closetime = Carbon::now()->subHours($closelimit);
 
 
