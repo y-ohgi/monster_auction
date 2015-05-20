@@ -7,7 +7,7 @@ require_once('db_connect.php');
 // room一覧の連想配列
 $roomlist = array();
 // rm_statをclosedにするまでの制限時間
-$closelimit = 24;
+$closelimit = 20;
 $closetime = Carbon::now()->subHours($closelimit);
 
 
