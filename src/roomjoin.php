@@ -8,7 +8,7 @@
  *   $_POST['room_id'];
  * res:
  *   {
- *     "result": true, // boolean
+ *     "result": true, // true/null
  *     "message": "Success" // successかエラーメッセージ
  *   }
  *
@@ -22,7 +22,7 @@ $uuid = h(@$_POST['uuid']);
 $room_id = intval(h(@$_POST['room_id'])); // TODO:数字でなかった場合の処理
 // res:
 $respons = array(
-    "result"=> null, // 成功の可否
+    "result"=> null,
     "message"=> null
 );
 
@@ -85,8 +85,6 @@ try{
     $stmt->bindValue(':rm_id', $room_id, PDO::PARAM_INT);
     $stmt->bindValue(':count', $count, PDO::PARAM_INT);
     $stmt->execute();
-    
-    
 }catch(Exception $e){
     endProces(null, "エラーです");
 }

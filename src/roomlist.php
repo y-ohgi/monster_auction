@@ -1,6 +1,20 @@
 <?php
 // roomlist.php
 
+/**
+ * ルームへ参加
+ * req:
+ *   TODO:$_POST['uuid'];
+ * res:
+ *   {
+ *     "rm_id": 1
+ *     "rm_title": "部屋名"
+ *     "rm_ppl": 1,   // 現在人数
+ *     "rm_max": 8    //部屋の格納可能人数
+ *   }
+ *
+ */
+
 require_once('init.php');
 require_once('db_connect.php');
 
