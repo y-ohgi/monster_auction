@@ -18,6 +18,9 @@
 require_once('init.php');
 require_once('db_connect.php');
 
+require_once('../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
 // req:
 $uuid = h(@$_POST['uuid']);
 // res:
@@ -29,9 +32,9 @@ $respons = array(
 
 // 終了処理
 // どうしようもなかった。
-function endProces($id, $msg){
+function endProces($stat, $msg){
     $dbh = null;
-    $respons['room_id'] = $id;
+    $respons['room_stat'] = $stat;
     $respons['message'] = $msg;
 
     echo json_encode($respons, JSON_UNESCAPED_UNICODE);
@@ -50,6 +53,15 @@ try{
         endProces(null, "uuidが存在しません");
     }
 
+    // アクティブチェックの初期化処理
+    //  現在時刻を挿入する
+    $now = Carbon::now();
+    $sql = 'UPDATE user_master SET um_active = :now WHERE um_uuid = :uuid;';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
+    $stmt->bindValue(':now', $now, PDO::PARAM_STR);
+    $stmt->execute();
+    
     // rm_statを取得する
     $sql = 'SELECT rm_stat FROM room_master WHERE rm_id = :room_id;';
     $stmt = $dbh->prepare($sql);
@@ -57,6 +69,7 @@ try{
     $stmt->execute();
     $stat = $stmt->fetchColumn();
 }catch(Exception $e){
+    //echo $e->getMessage();
     endProces(null, "エラーです");
 }
 
