@@ -11,7 +11,7 @@
  * res: 
  *  {
  *    "room_id": room_id,
- *    "message": message
+ *    "message": "Success"
  *  }
  * 
  */
@@ -63,7 +63,15 @@ try{
     $stmt->bindValue(':title', $room_title, PDO::PARAM_STR);
     $stmt->bindValue(':max', $room_max, PDO::PARAM_STR);
     $stmt->execute();
-    $id = $dbh->lastInsertId();
+    $room_id = $dbh->lastInsertId();
+
+    // user_masterにuuidで指定されたユーザーにrm_idを登録
+    // MEMO: room_joinでも同じことをするが、一時的に現在人数が0人にならないようにする為。
+    $sql = 'UPDATE user_master SET um_rm_id = :rm_id WHERE um_uuid = :uuid;';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(':rm_id', $room_id, PDO::PARAM_INT);
+    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
+    $stmt->execute();
 }catch(Exception $e){
     endProces(null, "エラーです");
 }
