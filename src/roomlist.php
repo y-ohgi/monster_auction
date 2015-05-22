@@ -39,6 +39,8 @@ $stmt = $dbh->prepare($sql);
 $stmt->bindValue(':closetime', $closetime, PDO::PARAM_STR);
 $stmt->execute();
 
+// activelimitに達している物をupdateする
+
 // room_masterからrm_stat = 'wait'の物をselect
 $sql = 'SELECT rm_id, rm_title, rm_ppl, rm_max FROM room_master WHERE rm_stat = "wait"';
 $stmt = $dbh->query($sql);

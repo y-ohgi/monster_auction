@@ -57,9 +57,9 @@ try{
     $stmt = $dbh->prepare($sql);
     $stmt->bindValue(':rm_id', $room_id, PDO::PARAM_INT);
     $stmt->execute();
-    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $ppl = intval($list[0]['rm_ppl']);
-    $max = intval($list[0]['rm_max']);
+    $list = $stmt->fetch(PDO::FETCH_ASSOC);
+    $ppl = intval($list['rm_ppl']);
+    $max = intval($list['rm_max']);
     // 最大人数に達していた場合
     if($ppl >= $max){
         endProces(null, "最大人数です");

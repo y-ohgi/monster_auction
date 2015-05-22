@@ -3,7 +3,7 @@ CREATE TABLE `user_master` (
   `um_rm_id` int(11), -- TODO: あとでFKを貼る
   `um_name` varchar(255) NOT NULL,
   `um_uuid` varchar(255),
-  `um_active` timestamp, -- ユーザーのアクティブチェック
+  `um_active` datetime, -- ユーザーのアクティブチェック
   `um_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`um_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;

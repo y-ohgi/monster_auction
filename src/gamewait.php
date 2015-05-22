@@ -81,7 +81,8 @@ try{
 
     
     // room_idを所持していて、指定時間応答が無い者のum_rm_idをnullにする
-    $sql = 'UPDATE user_master SET um_active = null WHERE um_active > :limittime;';
+    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active > :limittime;
+            UPDATE room_master SET rm_ppl = ';
     $stmt = $dbh->prepare($sql);
     $stmt->bindValue(':limittime', $limittime, PDO::PARAM_STR);
     $stmt->execute();
