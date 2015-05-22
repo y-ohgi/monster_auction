@@ -69,7 +69,7 @@ try{
     $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
     $stmt->execute();
     
-    $tmp = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+    $tmp = $stmt->fetch(PDO::FETCH_ASSOC);
     $room_id = $tmp["um_rm_id"];
     $active = $tmp["um_active"];
     if(!$room_id){

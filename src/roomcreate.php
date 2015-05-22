@@ -76,4 +76,4 @@ try{
     endProces(null, "エラーです");
 }
 
-endProces($id, "Success!!");
+endProces($room_id, "Success!!");
