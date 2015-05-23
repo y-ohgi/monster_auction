@@ -69,17 +69,18 @@ try{
     $stmt->execute();
     
     $tmp = $stmt->fetch(PDO::FETCH_ASSOC);
+    var_dump($tmp);
     $room_id = $tmp["um_rm_id"];
     $active = $tmp["um_active"];
-    // if(!$room_id){
-    //     endProces("uuidが存在しません");
-    // }
+    if(!$room_id){
+        endProces("uuidが存在しません");
+    }
     if($active < $activetime || $active == null){
         endProces("タイムオーバーです");
     }
     
     // room_idを所持していて、指定時間応答が無い者のum_rm_idをnullにする
-    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active > :limittime;';
+    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active < :limittime;';
     $stmt = $dbh->prepare($sql);
     $stmt->bindValue(':limittime', $activetime, PDO::PARAM_STR);
     $stmt->execute();
