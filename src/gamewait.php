@@ -42,10 +42,9 @@ $respons = array(
 );
 
 // 何秒前までをアクティブと認めるか.
-/*
-  $activetime = 30;
-  $limittime = Carbon::now()->subSeconds($activetime);
-*/
+$activelimit = 30;
+//$activetime = Carbon::now()->subSeconds($activelimit);
+$activetime = Carbon::now()->subMinutes($activelimit); // 一時的にn分にする
 
 
 // 終了処理
@@ -75,19 +74,21 @@ try{
     if(!$room_id){
         endProces("uuidが存在しません");
     }
-    /*    if($active < $limittime || $active == null){
+    if($active < $activetime || $active == null){
         endProces("タイムオーバーです");
     }
-
     
     // room_idを所持していて、指定時間応答が無い者のum_rm_idをnullにする
-    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active > :limittime;
-            UPDATE room_master SET rm_ppl = ';
+    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active > :limittime;';
     $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':limittime', $limittime, PDO::PARAM_STR);
+    $stmt->bindValue(':limittime', $activetime, PDO::PARAM_STR);
     $stmt->execute();
 
-    */
+    // 現在user_masterで$room_idを持っているものを取得し、その数をroom_masterへ反映させる
+    $sql = 'UPDATE room_master SET rm_ppl = (SELECT count(*) FROM user_master WHERE um_rm_id = :room_id) WHERE rm_id = :room_id;';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(':room_id', $room_id, PDO::PARAM_STR);
+    $stmt->execute();
     
     // user_masterで現在のroom_idを持っているユーザーを取得
     $sql = 'SELECT um_id, um_name FROM user_master WHERE um_rm_id = :room_id;';
@@ -111,7 +112,7 @@ try{
     }
     
 }catch(Exception $e){
-    echo $e->getMessage();
+    //echo $e->getMessage();
     endProces(null, "エラーです");
 }
 

@@ -52,6 +52,7 @@ try{
 
     
     // TODO: 以下はもう少し短くなるはず
+    // XXXX: room_idを指定していない場合これが帰ってくる
     // 指定されたroom_idが満員で無いかのチェック
     $sql = 'SELECT rm_ppl, rm_max FROM room_master WHERE rm_id = :rm_id;';
     $stmt = $dbh->prepare($sql);
