@@ -12,9 +12,10 @@ CREATE TABLE `user_master` (
 CREATE TABLE `room_master` (
   `rm_id` int(11) NOT NULL AUTO_INCREMENT,
   `rm_title` varchar(255),
-  `rm_stat` varchar(255),
+  `rm_stat` varchar(20),
   `rm_ppl` INTEGER DEFAULT 0,
   `rm_max` INTEGER DEFAULT 8,
   `rm_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`rm_id`)
+  PRIMARY KEY (`rm_id`),
+  KEY `index_rm_stat` (`rm_stat`(5))
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;

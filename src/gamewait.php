@@ -71,9 +71,9 @@ try{
     $tmp = $stmt->fetch(PDO::FETCH_ASSOC);
     $room_id = $tmp["um_rm_id"];
     $active = $tmp["um_active"];
-    if(!$room_id){
-        endProces("uuidが存在しません");
-    }
+    // if(!$room_id){
+    //     endProces("uuidが存在しません");
+    // }
     if($active < $activetime || $active == null){
         endProces("タイムオーバーです");
     }
