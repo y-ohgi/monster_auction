@@ -1,14 +1,8 @@
 <?php
 
-class DButil{
-    private function __construct(){
+//require_once('db_connect.php');
 
-    }
+require_once('model/Userdb.inc');
 
-    public static function authUuid($uuid, $col = 'um_id'){
-        $sql = 'SELECT :col FROM user_master WHERE um_id = :uuid';
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(':col', $col, PDO::)
-        return $stmt;
-    }
-}
+Userdb::createDbh();
+Userdb::authUuid('5560e4afedf70');
