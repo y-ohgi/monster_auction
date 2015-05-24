@@ -1,51 +1,39 @@
 <?php
 
-require_once('init.php');
-require_once('db_connect.php');
+//require_once('init.php');
+require_once('controller/Util.inc');
+//require_once('db_connect.php');
+require_once('model/Userdb.inc');
+require_once('controller/Page.inc');
 
-// 値受け取り
-$name = trim(h(@$_POST['name']));
-$uuid = h(@$_POST['uuid']);
+// req:
+$name = trim(Util::h(@$_POST['name']));
+$uuid = Util::h(@$_POST['uuid']);
+// res:
+$response = array(
+    "result"=>null,
+    "message"=> null
+);
+Page::setRes($response);
+
 
 if($name == ''){
-    echo "空白文字です";
-    exit();
+    Page::complete(false, '何も入力されていません');
 }
-
 
 // db処理
 try{
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $dbh->beginTransaction();
+    Db::getDbh()->beginTransaction();
 
-    // nameが既存であるかの判定
-    // TODO:uuidが既存であるかの判定
-    $sql = 'SELECT um_name FROM user_master WHERE um_name = :name';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':name', (string)$name, PDO::PARAM_STR);
-    $stmt->execute();
-    $exiname = $stmt->fetchColumn();
-
-    // 名前が存在した場合
-    if($exiname != false){
-        echo "名前が存在しています";
-        exit();
+    if(Userdb::regUser($uuid, $name) !== true){
+        Page::complete(false, '名前が存在しています');
     }
-
-    // ユーザーの登録
-    $sql = 'INSERT INTO user_master(um_name, um_uuid) values(:name, :uuid)';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':name', (string)$name, PDO::PARAM_STR);
-    $stmt->bindValue(':uuid', (string)$uuid, PDO::PARAM_STR);
-    $stmt->execute();
-
-    $dbh->commit();
+    Db::getDbh()->commit();
 }catch(Exception $error){
-    $dbh->rollback();
-    echo "REFUSAL";
-    exit();
+    Db::getDbh()->rollback();
+    Db::disconnect();
+    Page::complete(false, 'db error');
 }
-// dbとの接続を切断
-$dbh = null;
 
-echo "登録完了";
+Page::complete(true, 'Success!!');
+//echo "登録完了";

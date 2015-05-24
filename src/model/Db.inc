@@ -16,8 +16,15 @@ class Db{
             die();
         }
     }
+    
     public static function getDbh(){
         return self::$dbh;
     }
+
+    public static function disconnect(){
+        self::$dbh = null;
+    }
+       
 }
 
+Db::createDbh();
