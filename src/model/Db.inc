@@ -6,7 +6,7 @@ class Db{
     
     protected function __construct(){}
 
-    public static function createDbh(){
+    public static function getDbh(){
         if(static::$dbh === null){
             try {
                 static::$dbh = new PDO(Config::get('dsn'), Config::get('user'), Config::get('password'));
@@ -17,16 +17,13 @@ class Db{
                 die();
             }
         }
-    }
-    
-    public static function getDbh(){
         return static::$dbh;
     }
 
     public static function disconnect(){
-        static::$dbh = null;
+        if(static::$dbh){
+            static::$dbh = null;
+        }
     }
-       
 }
 
-Db::createDbh();
