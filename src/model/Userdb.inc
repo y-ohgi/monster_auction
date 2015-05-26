@@ -1,10 +1,10 @@
 <?php
+require_once('Db.inc');
 
 //====== ユーザーDB処理 ======
 
-require_once('Db.inc');
+class Userdb{
 
-class Userdb extends Db{
     //=== SELECT系 ===//
     // uuidが存在するかをbooleanで判定するだけ
     public static function authUser($uuid){
@@ -27,7 +27,7 @@ class Userdb extends Db{
     public static function getUuid($uuid, $col = 'um_id'){
         // $sql = 'SELECT :col FROM user_master WHERE um_uuid = :uuid';
         $sql = 'SELECT * FROM user_master WHERE um_uuid = :uuid';
-        $stmt = self::$dbh->prepare($sql);
+        $stmt = Db::getDbh()->prepare($sql);
         // $stmt->bindParam(':col', $col, PDO::PARAM_STR);
         $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
         $stmt->execute();

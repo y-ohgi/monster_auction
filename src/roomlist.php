@@ -15,42 +15,43 @@
  *
  */
 
-require_once('init.php');
+// require_once('init.php');
 require_once('db_connect.php');
+
+require_once('controller/Util.inc');
+require_once('model/Userdb.inc');
+require_once('controller/Page.inc');
 
 require_once('../lib/Carbon/Carbon.php');
 use Carbon\Carbon;
 
-// room一覧の連想配列
-$roomlist = array();
+// req:
+//==とりあえず使わない
+// $name = trim(Util::h(@$_POST['name']));
+// if(Userdb::authUser($uuid)){Page::complete(false)}
+// res:
+$response = array(
+    "result"=>null,
+    "message"=> null,
+    "roomlist"=>array()
+);
+Page::setRes($response);
+
+
+// time系の名前とかどうにかしたい
 
 // 何分前までをルームを生かすか
 $closelimit = 24;
 $closetime = Carbon::now()->subHours($closelimit);
+
+// TODO:クラス分けする
 // 何秒前までをアクティブと認めるか.
 $activelimit = 30;
 //$activetime = Carbon::now()->subSeconds($activelimit);
 $activetime = Carbon::now()->subMinutes($activelimit); // 一時的にn分にする
 
+
 try{
-    //////////////////// 一通り終わるまでroomlist.phpはuuidを必要としない ////////////////////////
-    // uuidでroom_masterからユーザーをselectする
-    // 存在しなかった場合はfalseを返しexit
-    // $sql = 'SELECT um_rm_id, um_active FROM user_master WHERE um_uuid = :uuid;';
-    // $stmt = $dbh->prepare($sql);
-    // $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-    // $stmt->execute();
-    
-    // $tmp = $stmt->fetch(PDO::FETCH_ASSOC);
-    // $room_id = $tmp["um_rm_id"];
-    // $active = $tmp["um_active"];
-    // if(!$room_id){
-    //     //endProces("uuidが存在しません");
-    //     echo "uuidが存在しません";
-    //     exit();
-    // }
-
-
     // activelimitに達しているユーザーを検索し、room_masterを更新する
     $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active > :activetime;';
     $stmt = $dbh->prepare($sql);
@@ -74,6 +75,7 @@ try{
      *  ) WHERE rm_id = :room_id;
      * 
      */
+    //=== とらん
     $sql = 'SELECT rm_id FROM room_master WHERE rm_stat != "closed";';
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
@@ -85,6 +87,7 @@ try{
         $stmt->bindValue(':room_id', $value['rm_id'], PDO::PARAM_INT);
         $stmt->execute();
     }
+    //======
 
     
     // $closetime時間の間使用されていない物のステータスを更新

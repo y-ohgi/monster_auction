@@ -9,6 +9,7 @@ class Config{
 
     public static function get($k){
         return self::$data[$k];
+        // XXX:throw
     }
 }
 /*
