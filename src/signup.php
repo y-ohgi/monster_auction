@@ -1,7 +1,8 @@
 <?php
 
 require_once('controller/Util.inc');
-require_once('model/Userdb.inc');
+require_once('model/UM.inc');
+require_once('model/UserDao.inc');
 require_once('controller/Page.inc');
 
 // req:
@@ -19,16 +20,6 @@ if($name == ''){
     Page::complete(450);
 }
 
-// db処理
-try{
-    // ユーザーの登録
-    $register = Userdb::regUser($uuid, $name);
-    if($register !== true){
-        Page::complete(451);
-    }
-}catch(Exception $error){
-    Dbh::get()->rollback();
-    Page::complete(550);
-}
-
-Page::complete(200);
+// ユーザーの登録
+$code = UserDao::regUser($uuid, $name);
+Page::complete($code);

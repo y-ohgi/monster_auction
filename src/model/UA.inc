@@ -18,8 +18,8 @@ class Useractivedb extends Userdb{
             $rm_id = $row['ua_rm_id'];
             
             static::delUser($um_id);
-            Roomuserdb::delUser($um_id);
-            Roomdb::subPpl($rm_id);
+            RU::delUser($um_id);
+            RM::subPpl($rm_id);
         }
         
         // あとルームユーザーでも消す

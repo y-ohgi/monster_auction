@@ -53,7 +53,7 @@ $activetime = Carbon::now()->subMinutes($activelimit); // 一時的にn分にす
 
 try{
     // ユーザー一定時間更新のないを削除
-    Userdb::updUsers($activetime);
+    UM::updUsers($activetime);
     
     /*
      *   オークションゲームの部屋を作っている

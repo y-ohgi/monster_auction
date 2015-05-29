@@ -44,7 +44,7 @@ class Page{
             }
         }
         
-        Db::disconnect();
+        Dbh::disconnect();
        
         //header("Content-Type: application/json; charset=utf-8");
         echo json_encode(static::$response, JSON_UNESCAPED_UNICODE);

@@ -7,6 +7,7 @@
  */
 require_once(dirname(__FILE__).'/../../conf/Conf.inc');
 
-class abstract Db{
+class Db{
+    
 }
 
