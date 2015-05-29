@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html lang="ja-JP">
+<head>
+	<!-- <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.10.3/build/cssreset/cssreset-min.css"]] > -->
+	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<meta charset="UTF-8">
+	<title></title>
+<script type="text/javascript">
+
+//var DOMAIN = "http://y-ohgi.net/";
+var DOMAIN = "http://localhost:8080/";
+var UUID;
+$(document).ready(function(){
+	// URL変更
+	$("#change_url").click(function(){
+		var domain = $("#url").val();
+		DOMAIN = domain;
+		
+		$("#result").val("URLを変更しました");
+		return false;
+	});
+	
+	// ユーザー登録
+	$("#register_name").click(function(e){
+		e.preventDefault();
+		// getuuid.php
+		var name = $("#name").val();
+
+		var uuid = $.get(DOMAIN+"getuuid.php", function(uuid){
+			UUID = uuid;
+			$.ajax({
+				url: DOMAIN+"signup.php",
+				method: 'POST',
+				data:{
+					uuid: uuid,
+					name: name
+				},
+				dataType:'json',
+				success: function(data) {
+					console.log(data)
+					$("#result").val(JSON.stringify(data).toString());
+				},
+				error: function(){
+					alert("error");
+				}
+			});
+		});
+	});
+	
+	// ルーム一覧取得
+	$("#get_roomlist").click(function(e){
+		e.preventDefault();
+		$.ajax({
+			url: DOMAIN+"roomlist.php",
+			method: 'GET',
+//			dataType:'json',
+			success: function(data) {
+				console.log(data)
+				$("#result").val(JSON.stringify(data).toString());
+			},
+			error: function(){
+				alert("error");
+			}
+		});
+	});
+	
+	// 入室
+	$("#get_memberlist").click(function(e){
+		e.preventDefault();
+		
+		var room_id = $("#room_id").val();
+		
+		$.ajax({
+			url: DOMAIN+"roomjoin.php",
+			method: 'POST',
+			data:{
+				uuid: UUID,
+				room_id: room_id
+			},
+			dataType:'json',
+			success: function(data) {
+				$.ajax({
+					url: DOMAIN+"gamelobby.php",
+					method: 'POST',
+					data:{
+						uuid: UUID,
+					},
+					dataType:'json',
+					success: function(data) {
+						console.log(data)
+						$.ajax({
+							url: DOMAIN+"gamewait.php",
+							method: 'POST',
+							data:{
+								uuid: UUID,
+							},
+							dataType:'json',
+							success: function(data) {
+								console.log(data)
+								$("#result").val(JSON.stringify(data).toString());
+							},
+							error: function(){
+								alert("error");
+							}
+						});
+					},
+					error: function(){
+						alert("error");
+					}
+				});
+			},
+			error: function(){
+				alert("error");
+			}
+		})
+
+	});
+
+});
+
+</script>
+</head>
+<body>
+<div style="display: flex">
+	<table border="1">
+		<!-- 名前登録 -->
+		<tr>
+			<td>
+				<label for="name">name: <input type="text" id="name" placeholder="name" /></label>
+			</td>
+			<td>
+				<button id="register_name">name登録</button>
+			</td>
+		</tr>
+		
+		<!-- ルーム一覧取得 -->
+		<tr>
+			<td>
+				ルーム一覧ください
+			</td>
+			<td>
+				<button id="get_roomlist">roomlist取得</button>
+			</td>
+		</tr>
+		
+		<!-- ルーム作成 -->
+		<tr>
+			<td>
+				<label for="room_title">room_title: <input type="text" id="room_title" placeholder="ルーム名を入力してください" /></label>
+			</td>
+			<td>
+				<button id="create_room">room作成</button>
+			</td>
+		</tr>
+		
+		<!-- 入室&室内メンバー -->
+		<tr>
+			<td>
+				<label for="room_id">room_id: <input type="text" id="room_id" placeholder="room_id" /></label>
+			</td>
+			<td>
+				<button id="get_memberlist">入室&memberlist取得</button>
+			</td>
+		</tr>
+		
+		<!-- URL変更 -->
+		<tr>
+			<td>
+				<label for="url">url: <input type="text" id="url" value="http://localhost:8080/" /></label>
+			</td>
+			<td>
+				<button id="change_url">URL変更</button>
+			</td>
+		</tr>
+	</table>
+	
+	<div style="margin-left: 10px;">
+		<textarea id="result" rows="5" cols="50" placeholder="result"></textarea>
+	</div>
+</div>
+</body>
+</html>

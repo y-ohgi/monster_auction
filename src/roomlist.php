@@ -16,11 +16,12 @@
  */
 
 // require_once('init.php');
-require_once('db_connect.php');
+//require_once('db_connect.php');
 
 require_once('controller/Util.inc');
-require_once('model/Userdb.inc');
 require_once('controller/Page.inc');
+require_once('model/Userdb.inc');
+require_once('model/Roomdb.inc');
 
 require_once('../lib/Carbon/Carbon.php');
 use Carbon\Carbon;
@@ -31,8 +32,7 @@ use Carbon\Carbon;
 // if(Userdb::authUser($uuid)){Page::complete(false)}
 // res:
 $response = array(
-    "result"=>null,
-    "message"=> null,
+    "status"=>null,
     "roomlist"=>array()
 );
 Page::setRes($response);
@@ -45,18 +45,15 @@ $closelimit = 24;
 $closetime = Carbon::now()->subHours($closelimit);
 
 // TODO:クラス分けする
-// 何秒前までをアクティブと認めるか.
+// 何秒前までをユーザーをアクティブと認めるか.
 $activelimit = 30;
 //$activetime = Carbon::now()->subSeconds($activelimit);
 $activetime = Carbon::now()->subMinutes($activelimit); // 一時的にn分にする
 
 
 try{
-    // activelimitに達しているユーザーを検索し、room_masterを更新する
-    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active > :activetime;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':activetime', $activetime, PDO::PARAM_STR);
-    $stmt->execute();
+    // ユーザー一定時間更新のないを削除
+    Userdb::updUsers($activetime);
     
     /*
      *   オークションゲームの部屋を作っている
@@ -81,7 +78,7 @@ try{
     $stmt->execute();
     foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $key=>$value){
         //var_dump($value['rm_id']);
-        
+
         $sql = 'UPDATE room_master SET rm_ppl = (SELECT count(um_id) FROM user_master WHERE um_rm_id = :room_id)WHERE rm_id = :room_id;';
         $stmt = $dbh->prepare($sql);
         $stmt->bindValue(':room_id', $value['rm_id'], PDO::PARAM_INT);
@@ -99,9 +96,6 @@ try{
     $stmt->bindValue(':closetime', $closetime, PDO::PARAM_STR);
     $stmt->execute();
     
-    
-
-
     // room_masterからrm_stat = 'wait'の物をselect
     $sql = 'SELECT rm_id, rm_title, rm_ppl, rm_max FROM room_master WHERE rm_stat = "wait"';
     $stmt = $dbh->query($sql);

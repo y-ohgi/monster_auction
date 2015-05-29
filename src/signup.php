@@ -10,25 +10,25 @@ $uuid = Util::h(@$_POST['uuid']);
 
 // res:
 $response = array(
-    "result"=>null,
-    "message"=> null
+    "status"=>null
 );
 Page::setRes($response);
 
-
+// validate
 if($name == ''){
-    Page::complete(false, '名前が入力されていません');
+    Page::complete(450);
 }
 
 // db処理
 try{
+    // ユーザーの登録
     $register = Userdb::regUser($uuid, $name);
     if($register !== true){
-        Page::complete(false, $register);
+        Page::complete(451);
     }
 }catch(Exception $error){
-    Db::getDbh()->rollback();
-    Page::complete(false, 'db error');
+    Dbh::get()->rollback();
+    Page::complete(550);
 }
 
-Page::complete(true, 'Success!!');
+Page::complete(200);

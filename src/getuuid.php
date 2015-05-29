@@ -1,7 +1,6 @@
 <?php
 // getuuid.php
 require_once('init.php');
-//require_once('db_connect.php');
 
 // uuidの作成
 $uuid = uniqid();
