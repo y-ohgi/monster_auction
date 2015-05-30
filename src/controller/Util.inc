@@ -17,15 +17,6 @@ class Util{
     public static function s($time){
         return strtotime($time);
     }
-
-    // 処理を終了する
-    // XXX: 別クラスに分けたほうが？
-    public static function complete(){
-        //if(Db::disconnect){}
-
-        exit();
-    }
-    
 }
 
 Util::showError();

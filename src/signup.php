@@ -1,8 +1,8 @@
 <?php
 
 require_once('controller/Util.inc');
-require_once('model/UserDao.inc');
 require_once('controller/Page.inc');
+require_once('model/UserDao.inc');
 
 // req:
 $name = trim(Util::h(@$_POST['name']));
