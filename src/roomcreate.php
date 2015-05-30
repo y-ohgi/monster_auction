@@ -1,8 +1,6 @@
 <?php
 // roomcreate.php
 
-// require_once('init.php');
-// require_once('db_connect.php');
 require_once('controller/Page.inc');
 require_once('controller/Util.inc');
 require_once('controller/Time.inc');
@@ -44,8 +42,7 @@ try{
     $code = RoomDao::joinRoom($rm_id, $um_id);
     /**/
 }catch(Exception $e){
-    echo $e->getMessage();
-    //Page::complete(550);
+    Page::complete(550);
 }
 
 Page::complete(200);

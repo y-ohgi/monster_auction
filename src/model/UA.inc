@@ -3,6 +3,14 @@
 require_once('Dbh.inc');
 
 class UA {
+    public static function addUser($ru_id, $time){
+        $sql = 'INSERT INTO user_active(ua_ru_id, ua_time) VALUES(:ru_id, :time);';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_INT);
+        $stmt->bindValue(':time', $time, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     public static function getUser($ua_id){
         $sql = 'SELECT * FROM user_active WHERE ua_id = :ua_id';
         $stmt = Dbh::get()->prepare($sql);

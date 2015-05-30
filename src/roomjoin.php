@@ -1,8 +1,6 @@
 <?php
 // roomjoin.php
 
-// require_once('init.php');
-// require_once('db_connect.php');
 require_once('controller/Page.inc');
 require_once('controller/Util.inc');
 require_once('controller/Time.inc');

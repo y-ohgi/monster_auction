@@ -29,5 +29,6 @@ CREATE TABLE `user_active` (
   
   `am_active` datetime, -- ユーザーのアクティブチェック
   `am_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`am_id`)
+  PRIMARY KEY (`am_id`),
+  UNIQUE KEY `ua_ru_id` (`ua_ru_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;

@@ -1,78 +1,38 @@
 <?php
 // gamelobby.php
 
-/**
- * 現在どの状態に居るかを取得する。
- * 取得後、"game$room_stat.php"へ遷移する
- *
- * req:
- *  $_POST['uuid']
- * res:
- *  {
- *    room_stat: "wait", // ルームが待機中か、それとも別のシーンにいるかを返す。
- *    message: "Success!!"
- *  }
- *
- */
+require_once('controller/Page.inc');
+require_once('controller/Util.inc');
+require_once('controller/Time.inc');
+require_once('controller/User.inc');
+require_once('model/RoomDao.inc');
+require_once('model/ActiveDao.inc');
+require_once('model/UserDao.inc');
 
-require_once('init.php');
-require_once('db_connect.php');
-
-require_once('../lib/Carbon/Carbon.php');
-use Carbon\Carbon;
 
 // req:
-$uuid = h(@$_POST['uuid']);
+$uuid = Util::h(@$_POST['uuid']);
 // res:
-$respons = array(
-    "room_stat"=> null,
-    "message"=> null
+$response = array(
+    "status"=>null
 );
+Page::setRes($response);
 
-
-// 終了処理
-// どうしようもなかった。
-function endProces($stat, $msg){
-    $dbh = null;
-    $respons['room_stat'] = $stat;
-    $respons['message'] = $msg;
-
-    echo json_encode($respons, JSON_UNESCAPED_UNICODE);
-    exit();
+if(UserDao::authUser($uuid) !== true){
+    Page::complete(452);
 }
+
+$user = new User($uuid);
+$ru_id = $user->getRUid();
+$time = Time::getNow();
 
 try{
-    // uuidでroom_masterからユーザーをselectする
-    // 存在しなかった場合はfalseを返しexit
-    $sql = 'SELECT um_rm_id FROM user_master WHERE um_uuid = :uuid;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-    $stmt->execute();
-    $room_id = $stmt->fetchColumn();
-    if(!$room_id){
-        endProces(null, "uuidが存在しません");
-    }
-
-    // アクティブチェックの初期化処理
-    //  現在時刻を挿入する
-    $now = Carbon::now();
-    $sql = 'UPDATE user_master SET um_active = :now WHERE um_uuid = :uuid;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-    $stmt->bindValue(':now', $now, PDO::PARAM_STR);
-    $stmt->execute();
+    // XXX: user_activeにユーザーを追加する
+    ActiveDao::addUser($ru_id, $time);
     
-    // rm_statを取得する
-    $sql = 'SELECT rm_stat FROM room_master WHERE rm_id = :room_id;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':room_id', intval($room_id), PDO::PARAM_INT);
-    $stmt->execute();
-    $stat = $stmt->fetchColumn();
 }catch(Exception $e){
-    //echo $e->getMessage();
-    endProces(null, "エラーです");
+    echo $e->getMessage();
+    Page::complete(550);
 }
 
-endProces($stat, "Success!!");
-
-
+Page::complete(200);
