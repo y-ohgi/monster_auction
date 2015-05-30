@@ -1,8 +1,8 @@
 <?php
 
-//require_once('Db.inc');
+require_once('Db.inc');
 
-class Roomdb extends Db{
+class RM{
     public static function getRoom($rm_id){
         $sql = 'SELECT * FROM room_master WHERE rm_id = :rm_id;';
         $stmt = Dbh::get()->prepare($sql);
@@ -11,8 +11,8 @@ class Roomdb extends Db{
         return $stmt;
     }
 
-    public static function getWaitingRooms(){
-        $sql = 'SELECT * FROM room_master WHERE rm_stat = "wait";';
+    public static function getWaitingRooms($s = null){
+        $sql = $s? $s :'SELECT * FROM room_master WHERE rm_stat = "wait";';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->execute();
         return $stmt;
@@ -24,5 +24,19 @@ class Roomdb extends Db{
         $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
         $stmt->execute();
     }
-    
+
+    public static function setPpl($rm_id, $ppl){
+        $sql = 'UPDATE room_master SET rm_ppl =:ppl WHERE rm_id = :rm_id;';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
+        $stmt->bindValue(':ppl', $ppl, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public static function closeRoom($limit){
+        $sql = 'UPDATE room_master SET rm_stat = "wait" WHERE rm_ppl = 0 OR rm_created < :closetime;';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':closetime', $limit, PDO::PARAM_STR);
+        $stmt->execute();
+    }
 }

@@ -1,7 +1,6 @@
 <?php
 
 require_once('controller/Util.inc');
-require_once('model/UM.inc');
 require_once('model/UserDao.inc');
 require_once('controller/Page.inc');
 
@@ -22,4 +21,6 @@ if($name == ''){
 
 // ユーザーの登録
 $code = UserDao::regUser($uuid, $name);
+
+// 処理終了
 Page::complete($code);

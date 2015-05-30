@@ -12,21 +12,3 @@ class Config{
         // XXX:throw
     }
 }
-/*
-// DB
-'db_name' => 'furu_ec',
-'db_user' => 'furu_ec',
-'db_pass' => 'furu_ec',
-'db_host' => 'localhost',
-// smarty
-'smarty_template_dir' => '/home/furu/smarty/ec2014/templates/',
-'smarty_compile_dir'  => '/home/furu/smarty/ec2014/templates_c/',
-//'' => '',
-);
-static public function get($name) {
-return self::$data_[$name];
-}
-
-}
-
-*/
