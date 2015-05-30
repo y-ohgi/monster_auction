@@ -32,10 +32,6 @@ class Page{
     // 処理を終了
     //  引数にはresponseのkey順
     public static function complete(){
-        // XXX:complteに引数が渡された場合self::incResに飛ばしたい
-        // if(func_num_args()){
-        //     self::incRes(func_get_args());
-        // }
         if(func_num_args()){
             $i = 0;
             foreach(static::$response as $key=>$value){

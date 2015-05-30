@@ -55,80 +55,21 @@ try{
     if(Time::s($activetime) > $time){
         Page::complete(453);
     }
-    
+
     // XXX: 同じルーム内の一定時間反応の無い者をルームから削除
-    $sql = 'SELECT * FROM room_user WHERE ru_rm_id = :rm_id;';
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    foreach($rows as $row){
-        // 各ユーザーのroom_user.id
-        $ruid = $row['ru_id'];
-        $rmid = $row['ru_rm_id'];
-        
-        $sql = 'SELECT * FROM user_active WHERE ua_ru_id = :ru_id;';
-        $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ru_id', $rm_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $ua = $stmt->fetch(PDO::FETCH_ASSOC);
-        $uaid = $ua['ua_id'];
-        if($ua['ua_time'] > $time){
-            // XXX: user_activeからユーザーを削除
-            UA::delUser($uaid);
-            // XXX: room_userからユーザーを削除
-            UserDao::delUser($ruid, $rmid);
-        }
-    }
-    
-    
+    ActiveDao::delTimeoutUserFromRoom($rm_id, $activetime);
+
     // XXX: 現在のルームのroom_master.pplの更新
-    $sql = 'SELECT count(*) FROM room_user WHERE ru_rm_id = :rm_id;';
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $ppl = $stmt->fetchColumn();
-
-    $sql = 'UPDATE room_master SET rm_ppl = :ppl WHERE rm_id = :rm_id;';
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(':ppl', $ppl, PDO::PARAM_INT);
-    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
-    $stmt->execute();
-
+    RoomDao::updRoomppl();
     
     // XXX: 同じルーム内のユーザーを取得
-    $sql = 'SELECT * FROM room_user WHERE ru_um_id = :rm_id;';
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    foreach($rows as $row){
-        $umid = $row['ru_um_id'];
-        $sql = 'SELECT * FROM user_master WHERE um_id = :um_id';
-        $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $um = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        $memberlist[] = array(
-            'id'=>$umid,
-            'name'=>$um['um_name']
-        );
-    }
-    
+    $memberlist = RoomDao::getUserInRoom($rm_id);
     
     // XXX: 現在のルーム内人数が埋まったかを確認
-    $sql = 'SELECT * FROM room_master WHERE rm_id = :rm_id;';
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $um = $stmt->fetch();
-    if($um['um_ppl'] < $um['um_max']){
-        $maxflg = true;
-    }
-    
+    $maxflg = RoomDao::chkPpl($rm_id);
+    /**/
 }catch(Exception $e){
-    echo $e->getMessage();
+    // echo $e->getMessage();
     Page::complete(550);
 }
 
