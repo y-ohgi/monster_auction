@@ -9,6 +9,7 @@ require_once('model/ActiveDao.inc');
 
 
 // req:
+//==========
 // $uuid = Util::h($_POST['uuid']);
 // XXX: ユーザーの認証
 // $auth = UserDao::authUser($uuid);
@@ -16,6 +17,7 @@ require_once('model/ActiveDao.inc');
 //     Page::complete($auth);
 // }
 // $user = new User($uuid);
+//==========
 
 // res:
 $response = array(

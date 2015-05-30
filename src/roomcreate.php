@@ -1,79 +1,51 @@
 <?php
 // roomcreate.php
 
-/**
- * ルームを作成
- *
- * req:
- *  $_POST['uuid'];
- *  $_POST['room_title'];
- *  $_POST['room_max'];
- * res: 
- *  {
- *    "room_id": room_id,
- *    "message": "Success"
- *  }
- * 
- */
+// require_once('init.php');
+// require_once('db_connect.php');
+require_once('controller/Page.inc');
+require_once('controller/Util.inc');
+require_once('controller/Time.inc');
+require_once('controller/User.inc');
+require_once('model/RoomDao.inc');
+require_once('model/ActiveDao.inc');
 
-require_once('init.php');
-require_once('db_connect.php');
 
 // req:
-$uuid = h(@$_POST['uuid']);
-$room_title = h(@$_POST['room_title']);
-$room_max = h(@$_POST['room_max']);
+$uuid = Util::h($_POST['uuid']);
+$room_title = Util::h($_POST['room_title']);
+$room_max = Util::h($_POST['room_max']);
+// auth();
 // res:
-$respons = array(
-    "room_id"=> null,
-    "message"=> null
+$response = array(
+    "status"=>null
 );
+Page::setRes($response);
 
-// 終了処理
-// どうしようもなかった。
-function endProces($id, $msg){
-    $dbh = null;
-    $respons['room_id'] = $id;
-    $respons['message'] = $msg;
+$user = new User($uuid);
+$um_id = $user->getId();
 
-    echo json_encode($respons, JSON_UNESCAPED_UNICODE);
-    exit();
-}
-
-// postじゃなかった場合
+       
+// POSTじゃなかった場合
 if($_SERVER["REQUEST_METHOD"] != "POST"){
-    endProces(null, "postじゃないです");
+    Page::complete(400);
 }
 
 
 try{
-    // uuidでroom_masterからユーザーをselectする
-    // 存在しなかった場合はfalseを返しexit
-    $sql = 'SELECT um_id FROM user_master WHERE um_uuid = :uuid;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-    $stmt->execute();
-    if(!$stmt->fetchColumn()){
-        endProces(null, "uuidが存在しません");
-    }
+    // XXX: userの最終ルーム作成時間を見て、一定時間経っていたor NULLの場合のみ作成可能
+    // XXX: 作成したユーザーidの登録
 
-    // room_titleとroom_maxを登録し、登録ができた場合はtrue
-    $sql = 'INSERT INTO room_master(rm_title, rm_max, rm_stat) VALUES(:title, :max, "wait");';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':title', $room_title, PDO::PARAM_STR);
-    $stmt->bindValue(':max', $room_max, PDO::PARAM_STR);
-    $stmt->execute();
-    $room_id = $dbh->lastInsertId();
+    // XXX: roomを登録
+    $rm_id = RoomDao::addRoom($room_title, $room_max);
 
-    // user_masterにuuidで指定されたユーザーにrm_idを登録
-    // MEMO: room_joinでも同じことをするが、一時的に現在人数が0人にならないようにする為。
-    $sql = 'UPDATE user_master SET um_rm_id = :rm_id WHERE um_uuid = :uuid;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':rm_id', $room_id, PDO::PARAM_INT);
-    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-    $stmt->execute();
+    // ルームに参加
+    //   Xxx::joinRoom($rm_id)
+    $code = RoomDao::joinRoom($rm_id, $um_id);
+    /**/
 }catch(Exception $e){
-    endProces(null, "エラーです");
+    echo $e->getMessage();
+    //Page::complete(550);
 }
 
-endProces($room_id, "Success!!");
+Page::complete(200);
