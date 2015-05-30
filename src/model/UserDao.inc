@@ -18,6 +18,11 @@ class UserDAO {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user;
     }
+
+    public static function delUser($ru_id, $rm_id){
+        RU::delUser($ru_id);
+        UM::subPpl($rm_id);
+    }
     
     // ユーザー登録
     public static function regUser($uuid, $name){

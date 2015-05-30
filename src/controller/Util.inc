@@ -13,10 +13,6 @@ class Util{
         return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
     }
 
-    // timestampをunixスタンプへ変更
-    public static function s($time){
-        return strtotime($time);
-    }
 }
 
 Util::showError();

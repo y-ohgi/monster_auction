@@ -6,7 +6,6 @@ require_once('controller/Util.inc');
 require_once('controller/Time.inc');
 require_once('controller/User.inc');
 require_once('model/RoomDao.inc');
-require_once('model/ActiveDao.inc');
 
 
 // req:

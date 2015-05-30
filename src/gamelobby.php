@@ -18,6 +18,7 @@ $response = array(
 );
 Page::setRes($response);
 
+
 if(UserDao::authUser($uuid) !== true){
     Page::complete(452);
 }
@@ -26,12 +27,12 @@ $user = new User($uuid);
 $ru_id = $user->getRUid();
 $time = Time::getNow();
 
+
 try{
-    // XXX: user_activeにユーザーを追加する
+    // user_activeにユーザーを追加する
     ActiveDao::addUser($ru_id, $time);
     
 }catch(Exception $e){
-    echo $e->getMessage();
     Page::complete(550);
 }
 

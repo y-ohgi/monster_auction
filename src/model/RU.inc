@@ -10,6 +10,14 @@ class RU{
         $stmt->bindValue(':um_id', $um_id, PDO::PARAM_INT);
         $stmt->execute();
     }
+
+    public static function getUser($ru_id){
+        $sql = 'SELECT * FROM room_user WHERE r_id = :ru_id;';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
+    }
     
     public static function getUsers($rm_id){
         $sql = 'SELECT * FROM room_user WHERE ru_rm_id = :rm_id;';
@@ -27,10 +35,10 @@ class RU{
         return $stmt;
     }
     
-    public static function deUser($um_id){
-        $sql = 'DELETE FROM room_user WHERE ru_um_id = :um_id';
+    public static function delUser($ru_id){
+        $sql = 'DELETE FROM room_user WHERE ru_id = :ru_id';
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':um_id', $um_id, PDO::PARAM_STR);
+        $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_STR);
         $stmt->execute();
     }
 }

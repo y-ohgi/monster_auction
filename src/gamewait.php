@@ -1,121 +1,136 @@
 <?php
 // gamewait.php
 
-/**
- * 現在のルーム内メンバーを取得し、最大になった場合maxflgをtrueにする
- * 
- *
- * req:
- *  $_POST['uuid']
- * res:
- *  {
- *    "maxflg"=>null,  // true/null
- *    "message"=>null, // エラーが有った場合メッセージを格納
- *    "memberlist"=> // ルーム内のメンバーを格納
- *    [ 
- *      {
- *         "um_id":"1",
- *         "um_name":"あ"
- *       },
- *       {
- *         "um_id":"2",
- *         "um_name":"いえ"
- *       }
- *     ]
- *  }
- *
- */
+//=============
+// タイムオーバーでワーニング出る、
+//  が、正常なのと今日のやる気が尽きた。
+ini_set('display_errors', 'Off');
+//============
 
-require_once('init.php');
-require_once('db_connect.php');
 
-require_once('../lib/Carbon/Carbon.php');
-use Carbon\Carbon;
+
+require_once('controller/Page.inc');
+require_once('controller/Util.inc');
+require_once('controller/Time.inc');
+require_once('controller/User.inc');
+require_once('model/RoomDao.inc');
+require_once('model/ActiveDao.inc');
+require_once('model/UserDao.inc');
 
 // req:
-$uuid = h(@$_POST['uuid']);
+$uuid = Util::h($_POST['uuid']);
 // res:
-$respons = array(
+$response = array(
+    "status"=>null,
     "maxflg"=>null,
-    "message"=> null,
     "memberlist"=>array()
 );
+Page::setRes($response);
 
-// 何秒前までをアクティブと認めるか.
-$activelimit = 30;
-//$activetime = Carbon::now()->subSeconds($activelimit);
-$activetime = Carbon::now()->subMinutes($activelimit); // 一時的にn分にする
-
-
-// 終了処理
-// どうしようもなかった。
-function endProces($msg, $flg=null, $user=null){
-    $dbh = null;
-    
-    $respons['maxflg'] = $flg;
-    $respons['message'] = $msg;
-    $respons['memberlist'] = $user;
-
-    echo json_encode($respons, JSON_UNESCAPED_UNICODE);
-    exit();
+if(UserDao::authUser($uuid) !== true){
+    Page::complete(452);
 }
 
+$user = new User($uuid);
+$ua_id = $user->getUAid();
+if(!$ua_id){
+    Page::complete(453);
+}
+$ru_id = $user->getRUid();
+$rm_id = $user->getRMid();
+
+$ua = ActiveDao::getUser($ua_id);
+
+
+$maxflg = false;
+$memberlist = array();
+
+// ユーザー制限時間
+$activetime = Time::getActive();
+
+
 try{
-    // uuidでroom_masterからユーザーをselectする
-    // 存在しなかった場合はfalseを返しexit
-    $sql = 'SELECT um_rm_id, um_active FROM user_master WHERE um_uuid = :uuid;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-    $stmt->execute();
-    
-    $tmp = $stmt->fetch(PDO::FETCH_ASSOC);
-    //var_dump($tmp);
-    $room_id = $tmp["um_rm_id"];
-    $active = $tmp["um_active"];
-    if(!$room_id){
-        endProces("uuidが存在しません");
-    }
-    if($active < $activetime || $active == null){
-        endProces("タイムオーバーです");
+    // XXX: タイムオーバーとuser_activeに存在しなかった場合の処理
+    $time = Time::s($ua["ua_time"]);
+    if(Time::s($activetime) > $time){
+        Page::complete(453);
     }
     
-    // room_idを所持していて、指定時間応答が無い者のum_rm_idをnullにする
-    $sql = 'UPDATE user_master SET um_active = null, um_rm_id = null WHERE um_active < :limittime;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':limittime', $activetime, PDO::PARAM_STR);
+    // XXX: 同じルーム内の一定時間反応の無い者をルームから削除
+    $sql = 'SELECT * FROM room_user WHERE ru_rm_id = :rm_id;';
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach($rows as $row){
+        // 各ユーザーのroom_user.id
+        $ruid = $row['ru_id'];
+        $rmid = $row['ru_rm_id'];
+        
+        $sql = 'SELECT * FROM user_active WHERE ua_ru_id = :ru_id;';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ru_id', $rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $ua = $stmt->fetch(PDO::FETCH_ASSOC);
+        $uaid = $ua['ua_id'];
+        if($ua['ua_time'] > $time){
+            // XXX: user_activeからユーザーを削除
+            UA::delUser($uaid);
+            // XXX: room_userからユーザーを削除
+            UserDao::delUser($ruid, $rmid);
+        }
+    }
+    
+    
+    // XXX: 現在のルームのroom_master.pplの更新
+    $sql = 'SELECT count(*) FROM room_user WHERE ru_rm_id = :rm_id;';
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $ppl = $stmt->fetchColumn();
+
+    $sql = 'UPDATE room_master SET rm_ppl = :ppl WHERE rm_id = :rm_id;';
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':ppl', $ppl, PDO::PARAM_INT);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
     $stmt->execute();
 
-    // 現在user_masterで$room_idを持っているものを取得し、その数をroom_masterへ反映させる
-    $sql = 'UPDATE room_master SET rm_ppl = (SELECT count(*) FROM user_master WHERE um_rm_id = :room_id) WHERE rm_id = :room_id;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':room_id', $room_id, PDO::PARAM_STR);
-    $stmt->execute();
     
-    // user_masterで現在のroom_idを持っているユーザーを取得
-    $sql = 'SELECT um_id, um_name FROM user_master WHERE um_rm_id = :room_id;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
+    // XXX: 同じルーム内のユーザーを取得
+    $sql = 'SELECT * FROM room_user WHERE ru_um_id = :rm_id;';
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
     $stmt->execute();
-    $now = $stmt->rowCount();
-    $member = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach($rows as $row){
+        $umid = $row['ru_um_id'];
+        $sql = 'SELECT * FROM user_master WHERE um_id = :um_id';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $um = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $memberlist[] = array(
+            'id'=>$umid,
+            'name'=>$um['um_name']
+        );
+    }
     
-    // 現在のroom_idのrm_maxを取得し$maxflgを作成
-    $sql = 'SELECT rm_max FROM room_master WHERE rm_id = :room_id;';
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
+    
+    // XXX: 現在のルーム内人数が埋まったかを確認
+    $sql = 'SELECT * FROM room_master WHERE rm_id = :rm_id;';
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
     $stmt->execute();
-    $max = $stmt->fetchColumn();
-    if($max <= $now){
+    $um = $stmt->fetch();
+    if($um['um_ppl'] < $um['um_max']){
         $maxflg = true;
-    }else{
-        $maxflg = false;
     }
     
 }catch(Exception $e){
-    //echo $e->getMessage();
-    endProces(null, "エラーです");
+    echo $e->getMessage();
+    Page::complete(550);
 }
 
-endProces("Success!!", $maxflg, $member);
+Page::complete(200, $maxflg, $memberlist);
 

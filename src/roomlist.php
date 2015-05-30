@@ -26,6 +26,7 @@ $response = array(
 );
 Page::setRes($response);
 
+
 // 部屋
 $closetime = Time::getRoom();
 // ユーザー

@@ -4,7 +4,7 @@ require_once('Db.inc');
 
 class RM{
     public static function addRoom($title, $max){
-        $sql = 'INSERT INTO room_master(rm_title, rm_max) VALUES(:title, :max);';
+        $sql = 'INSERT INTO room_master(rm_title, rm_max, rm_stat) VALUES(:title, :max, "wait");';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':title', $title, PDO::PARAM_STR);
         $stmt->bindValue(':max', $max, PDO::PARAM_INT);
@@ -50,7 +50,7 @@ class RM{
     }
 
     public static function closeRoom($limit){
-        $sql = 'UPDATE room_master SET rm_stat = "wait" WHERE rm_ppl = 0 OR rm_created < :closetime;';
+        $sql = 'UPDATE room_master SET rm_stat = "close" WHERE rm_ppl = 0 OR rm_created < :closetime;';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':closetime', $limit, PDO::PARAM_STR);
         $stmt->execute();
