@@ -35,7 +35,7 @@ class RM{
     }
     
     public static function subPpl($rm_id){
-        $sql = 'UPDATE room_master SET rm_ppl = rm_pp-1 WHERE rm_id = :rm_id;';
+        $sql = 'UPDATE room_master SET rm_ppl = rm_ppl-1 WHERE rm_id = :rm_id;';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
         $stmt->execute();

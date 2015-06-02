@@ -1,9 +1,9 @@
 <?php
 
+require_once('db_connect.php');
 
-require_once('controller/User.inc');
-
-$user = new User("556848028678f");
-var_dump($user->getUser());
-var_dump($user->getName());
-var_dump($user->getRUid());
+$sql = "SELECT * FROM user_master ORDER BY um_id DESC;";
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+var_dump($row);

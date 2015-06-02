@@ -32,12 +32,17 @@ class Page{
     // 処理を終了
     //  引数にはresponseのkey順
     public static function complete(){
-        if(func_num_args()){
-            $i = 0;
-            foreach(static::$response as $key=>$value){
-                static::$response[$key] = func_get_arg($i);
-                $i++;
+        try{
+            if(func_num_args()){
+                $i = 0;
+                foreach(static::$response as $key=>$value){
+                    static::$response[$key] = func_get_arg($i);
+                    throw new Exception("お茶を濁す");
+                    $i++;
+                }
             }
+        }catch(Exception $e){
+            
         }
         
         Dbh::disconnect();

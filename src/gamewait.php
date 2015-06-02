@@ -1,14 +1,6 @@
 <?php
 // gamewait.php
 
-//=============
-// タイムオーバーでワーニング出る、
-//  が、正常なのと今日のやる気が尽きた。
-ini_set('display_errors', 'Off');
-//============
-
-
-
 require_once('controller/Page.inc');
 require_once('controller/Util.inc');
 require_once('controller/Time.inc');
@@ -67,6 +59,13 @@ try{
     
     // XXX: 現在のルーム内人数が埋まったかを確認
     $maxflg = RoomDao::chkPpl($rm_id);
+    // あとで分ける
+    if($maxflg){
+        $sql = 'UPDATE room_master SET rm_stat = "auction" WHERE rm_id = :rm_id;';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue($rm_id);
+        $stmt->execute();
+    }
     /**/
 }catch(Exception $e){
     // echo $e->getMessage();

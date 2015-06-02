@@ -48,6 +48,7 @@ try{
     $roomlist = RoomDao::getWaitingRooms();
     
 }catch(Exception $e){
+    echo $e->getMessage();
     Page::complete(550);
 }
 

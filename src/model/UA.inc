@@ -36,7 +36,7 @@ class UA {
 
 
     public static function getTimeoutUsers($limit){
-        $sql = 'SELECT * FROM user_active WHERE ua_time > :limit;';
+        $sql = 'SELECT * FROM user_active WHERE ua_time < :limit;';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_STR);
         $stmt->execute();

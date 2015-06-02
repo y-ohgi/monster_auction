@@ -21,7 +21,7 @@ class UserDAO {
 
     public static function delUser($ru_id, $rm_id){
         RU::delUser($ru_id);
-        UM::subPpl($rm_id);
+        RM::subPpl($rm_id);
     }
     
     // ユーザー登録
