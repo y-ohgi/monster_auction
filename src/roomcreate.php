@@ -9,6 +9,12 @@ require_once('model/RoomDao.inc');
 require_once('model/ActiveDao.inc');
 
 
+// POSTじゃなかった場合
+if($_SERVER["REQUEST_METHOD"] != "POST"){
+    Page::complete(400);
+}
+
+
 // req:
 $uuid = Util::h($_POST['uuid']);
 $room_title = Util::h($_POST['room_title']);
@@ -24,12 +30,6 @@ $user = new User($uuid);
 $um_id = $user->getId();
 
        
-// POSTじゃなかった場合
-if($_SERVER["REQUEST_METHOD"] != "POST"){
-    Page::complete(400);
-}
-
-
 try{
     // XXX: userの最終ルーム作成時間を見て、一定時間経っていたor NULLの場合のみ作成可能
     // XXX: 作成したユーザーidの登録

@@ -1,5 +1,5 @@
 <?php
-// gameauction.php
+// auctionmiddle.php
 
 require_once('controller/Page.inc');
 require_once('controller/Util.inc');
@@ -50,10 +50,7 @@ try{
     $created = Carbon::parse($row['ra_created']);
     $targettime = $created->copy()->addSeconds(Time::getAuctionTime());
     if($targettime->isPast()){
-        // $sql = "UPDATE room_auction SET ra_ma_id = ra_ma_id+1 WHERE ra_rm_id = :rm_id;";
-        // $stmt = Dbh::get()->prepare($sql);
-        // $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
-        // $stmt->execute();
+        // room_auctionが参照するmonster_auctionを変更
         
         $timer = Time::getAuctionTime();
     // 残り秒を求める
@@ -61,12 +58,14 @@ try{
         $timer = $created->diffInSeconds($targettime);
     }
 
+    
     $sql = 'SELECT * FROM monster_auction WHERE ma_id = :ma_id;';
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(":ma_id", $ma_id, PDO::PARAM_INT);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $price = $row['ma_price'];
+    
     
     $ru_id = $row['ma_ru_id'];
     // ru_idからum_idを取得
