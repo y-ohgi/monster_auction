@@ -10,6 +10,8 @@ class Time{
     private static $activelimit_ = 30;
     // (ルーム作成から)何秒後からオークションを始めるか
     private static $auctionstart_ = 10;
+    // オークションの開催時間
+    private static $auctionstart_ = 30;
 
     public static function getNow(){
         $now = Carbon::now();
@@ -27,6 +29,10 @@ class Time{
     public static function getAuctionStart(){
         return static::$auctionstart_;
     }
+    public static function getAuctionTime(){
+        return static::$auctiontime_;
+    }
+    
     
 
     // timestampをunixスタンプへ変更

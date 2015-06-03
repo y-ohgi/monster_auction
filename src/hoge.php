@@ -14,7 +14,7 @@ $time = "2015-06-03 17:25:57";
 
 $created = Carbon::parse($time);
 //$created = Carbon::now();
-$targettime = $created->copy()->subSeconds(Time::getAuctionStart());
+$targettime = $created->copy()->addSeconds(Time::getAuctionStart());
 
 echo $diff = $created->diffInSeconds($targettime);
 /*
