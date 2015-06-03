@@ -5,23 +5,29 @@ use Carbon\Carbon;
 
 class Time{
     // 何時間までルームを生かすか
-    private static $closelimit = 24;
+    private static $closelimit_ = 24;
     // 何秒までユーザーを生存とみなすか
-    private static $activelimit = 30;
+    private static $activelimit_ = 30;
+    // (ルーム作成から)何秒後からオークションを始めるか
+    private static $auctionstart_ = 10;
 
-    public static function getRoom(){
-        $closetime = Carbon::now()->subHours(static::$closelimit);
-        return $closetime;
-    }
-    public static function getActive(){
-        //$activetime = Carbon::now()->subSeconds($activelimit);
-        $activetime = Carbon::now()->subMinutes(static::$activelimit); // 一時的にn分にする
-        return $activetime;
-    }
     public static function getNow(){
         $now = Carbon::now();
         return $now;
     }
+    public static function getRoom(){
+        $closetime = Carbon::now()->subHours(static::$closelimit_);
+        return $closetime;
+    }
+    public static function getActive(){
+        //$activetime = Carbon::now()->subSeconds($activelimit);
+        $activetime = Carbon::now()->subMinutes(static::$activelimit_); // 一時的にn分にする
+        return $activetime;
+    }
+    public static function getAuctionStart(){
+        return static::$auctionstart_;
+    }
+    
 
     // timestampをunixスタンプへ変更
     public static function s($time){
