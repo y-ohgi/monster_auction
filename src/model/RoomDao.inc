@@ -81,7 +81,7 @@ class RoomDao{
         $stmt = RM::getWaitingRooms($sql);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $rooms = $rows? $rows : array();
-        
+
         return $rooms;
     }
 
