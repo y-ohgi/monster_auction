@@ -38,7 +38,7 @@ class RU{
     public static function delUser($ru_id){
         $sql = 'DELETE FROM room_user WHERE ru_id = :ru_id';
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_STR);
+        $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_INT);
         $stmt->execute();
     }
 }
