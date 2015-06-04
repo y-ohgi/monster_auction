@@ -45,16 +45,31 @@ try{
     $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
+    $ra_id = $row['ra_id'];
     $ma_id = $row['ra_ma_id'];
 
     // 時間チェック
     $created = Carbon::parse($row['ra_created']);
     $targettime = $created->copy()->addSeconds(Time::getAuctionTime());
     if($targettime->isPast()){
-        // room_auctionが参照するmonster_auctionを変更
-        $sql = "SELECT * FROM monster_auction WHERE ";
+        // XXX:room_auctionが参照するmonster_auctionを変更
+        $sql = "SELECT * FROM monster_auction WHERE ma_ra_id = :ra_id OR ma_closeflg !=true;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        $new_maid = $row['ma_id'];
+
+        $sql = 'UPDATE room_auction SET ra_ma_id = :ma_id WHERE ra_id = :ra_id;';
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ma_id', $new_maid, PDO::PARAM_INT);
+        $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+
+        // 残り時間を設定
         $timer = Time::getAuctionTime();
     // 残り秒を求める
     }else{

@@ -39,3 +39,25 @@ CREATE TABLE `user_active` (
     PRIMARY KEY (`ua_id`),
     UNIQUE KEY `ua_ru_id` (`ua_ru_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+CREATE TABLE `room_auction` (
+    `ra_id` int(11) NOT NULL AUTO_INCREMENT,
+	`ra_rm_id` int(11),
+	`ra_ma_id` int(11),
+    
+    `ra_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`ra_id`),
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+CREATE TABLE `monster_auction` (
+    `ma_id` int(11) NOT NULL AUTO_INCREMENT,
+	`ma_ma_id` int(11),
+	`ma_ru_id` int(11),
+
+	`ma_mm_id` int(11),
+	`ma_price` integer,
+	`ma_closeflg` varchar(19),
+	
+    `ma_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`ma_id`),
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;

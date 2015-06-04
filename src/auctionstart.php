@@ -39,7 +39,8 @@ try{
     $sql = 'SELECT * FROM room_master WHERE rm_id = :rm_id;';
     if($row['rm_ppl'] === $row['rm_max']){}
      */
-    
+
+    // 現在のオークションを取得
     $sql = 'SELECT * FROM room_auction WHERE ra_rm_id = :rm_id;';
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
