@@ -9,8 +9,6 @@ require_once('model/RoomDao.inc');
 //require_once('model/ActiveDao.inc');
 require_once('model/UserDao.inc');
 
-// req:
-$uuid = Util::h($_POST['uuid']);
 // res:
 $response = array(
     "status"=>null,
@@ -20,10 +18,12 @@ $response = array(
     "price"=>null
 );
 Page::setRes($response);
-
+// req:
 if(UserDao::authUser($uuid) !== true){
     Page::complete(452);
 }
+$uuid = Util::h($_POST['uuid']);
+
 
 $user = new User($uuid);
 $ua_id = $user->getUAid();
@@ -38,6 +38,8 @@ $timer;
 
 
 try{
+    // ra_ma_idが存在しなかった場合
+    
     $sql = 'SELECT * FROM room_auction WHERE ra_rm_id = :rm_id;';
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
@@ -51,6 +53,7 @@ try{
     $targettime = $created->copy()->addSeconds(Time::getAuctionTime());
     if($targettime->isPast()){
         // room_auctionが参照するmonster_auctionを変更
+        $sql = "SELECT * FROM monster_auction WHERE ";
         
         $timer = Time::getAuctionTime();
     // 残り秒を求める

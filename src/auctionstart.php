@@ -9,18 +9,18 @@ require_once('model/RoomDao.inc');
 //require_once('model/ActiveDao.inc');
 require_once('model/UserDao.inc');
 
-// req:
-$uuid = Util::h($_POST['uuid']);
 // res:
 $response = array(
     "status"=>null,
     "timer"=>null
 );
 Page::setRes($response);
-
+// req:
 if(UserDao::authUser($uuid) !== true){
     Page::complete(452);
 }
+$uuid = Util::h($_POST['uuid']);
+
 
 $user = new User($uuid);
 $ua_id = $user->getUAid();
