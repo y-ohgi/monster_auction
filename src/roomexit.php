@@ -34,6 +34,7 @@ try{
     UA::delUser($ua_id);
     UserDao::delUser($ru_id, $rm_id);
 }catch(Exception $e){
+    echo $e->getMessage();
     Page::complete(550);
 }
 
