@@ -14,10 +14,7 @@ $uuid = Util::h($_POST['uuid']);
 // res:
 $response = array(
     "status"=>null,
-    "time"=>null, // 残り時間
-    "auction_id"=>null, // 現在のオークションid
-    "player_id"=>null, // 落札者id
-    "price"=>null    
+    "time"=>null
 );
 Page::setRes($response);
 
@@ -31,43 +28,31 @@ if(!$ua_id){
     Page::complete(453);
 }
 //$ru_id = $user->getRUid();
-//$rm_id = $user->getRMid();
+$rm_id = $user->getRMid();
+
+$time = 0;
 
 try{
     $time_start = microtime(true);
     
     // XXX: オークションidを取得しに行き、なかった場合は初期処理を行い、オークションidを改めて取得
     //  複数作られる可能性がありそう
-
-    try{
-        Dbh::get()->beginTransaction();
-        // auction_idを取得
-        $sql = 'SELECT * FROM auction_master WHERE am_rm_id = :rm_id;';
-        $am = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // auction_masterに現在のルーム用のレコードがなかった場合
-        if(!$am){
-            // 人数分のuser_monsterを生成
-            // auction_idを挿入？
-            $sql = 'INSERT INTO auction_master(am_rm_id, am_time) VALUES(:rm_id, :time);';
-            $id = Dbh::get()->lastInsertId():
-            
-        }
-        Dbh::get()->commit();
-    }catch(Exception $e){
-        echo $e->getMessage();
-        Dbh::get()->rollback();
-    }
-    // timeが0だった場合次のオークションに移行
-    $sql = "";
-
     
-    $timelimit = microtime(true) - $time_start;
-    echo $timelimit;
-    //
+    // XXX: room_auctionを取得
+    //  -> XXX: 取得できなかった場合は新しくレコードを挿入
+    //    -> XXX: room_auction.rm_id .ma_id を挿入
+
+    // XXX: room_auction.createdを取得
+
+    // XXX: createdにTime::getAuctionStart()を足し、isPast()を行う
+
+    // -> XXX: 過ぎていた場合はstatus:250を返す
+    // -> XXX: 過ぎていなかった場合はstatus:200, time: $timeを返す
     
 }catch(Exception $e){
-    
+    Dbh::get()->rollback();
+    Page::complete(550);
 }
 
-Page::complete(200, $maxflg, $memberlist);
+Page::complete(200, $time);
 
