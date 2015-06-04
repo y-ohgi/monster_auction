@@ -34,8 +34,11 @@ try{
     // XXX: userの最終ルーム作成時間を見て、一定時間経っていたor NULLの場合のみ作成可能
     // XXX: 作成したユーザーidの登録
 
-    // XXX: roomを登録
+    // roomを登録
     $rm_id = RoomDao::addRoom($room_title, $room_max);
+
+    // XXX: ルーム用のmonster_auctionレコードを人数分作成
+    
 
     // ルームに参加
     //   Xxx::joinRoom($rm_id)
