@@ -46,18 +46,29 @@ CREATE TABLE `room_auction` (
 	`ra_ma_id` int(11),
     
     `ra_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`ra_id`),
+    PRIMARY KEY (`ra_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 CREATE TABLE `monster_auction` (
     `ma_id` int(11) NOT NULL AUTO_INCREMENT,
 	`ma_ma_id` int(11),
 	`ma_ru_id` int(11),
-
+	
 	`ma_mm_id` int(11),
 	`ma_price` integer,
 	`ma_closeflg` varchar(19),
 	
     `ma_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`ma_id`),
+    PRIMARY KEY (`ma_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+CREATE TABLE `monster_master` (
+	`mm_id` int(11) NOT NULL AUTO_INCREMENT,
+	`mm_name` varchar(255),
+	`mm_price` integer, -- デフォルトの金額
+
+	-- その他能力値
+	PRIMARY KEY(`mm_id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+
