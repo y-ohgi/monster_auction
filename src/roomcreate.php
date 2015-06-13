@@ -10,6 +10,8 @@ require_once('model/ActiveDao.inc');
 
 //-----
 //require_once('model/Dbh.inc');
+require_once(dirname(__FILE__).'/../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
 
 
 // POSTじゃなかった場合
@@ -46,27 +48,31 @@ try{
     $time = Carbon::now();
 
     // モンスター数分の数値の格納された配列
-    $ma_mmid_ary = range(1..20);
+    $ma_mmid_ary = range(1, 20);
     shuffle($ma_mmid_ary);
 
-    $sql = "INSER INTO room_auction(ra_rm_id, ra_time) VALUES(:rm_id, :time)";
+    $sql = "INSERT INTO room_auction(ra_rm_id, ra_time) VALUES(:rm_id, :time);";
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
     $stmt->bindValue(':time', $time, PDO::PARAM_STR);
     $stmt->execute();
-    $ra_id = $stmt->lastInsertId();
+    
+    $ra_id = Dbh::get()->lastInsertId();
     
     // 人数分のmonster_auctionレコードを作成
     for($i=0;$i<$room_max;$i++){
         $mm_id = $ma_mmid_ary[$i];
+        
         // mmから取り出し
-        $sql = "SELECT * FROM monster_master WHERE mm_id = :mm_id";
+        $sql = "SELECT * FROM monster_master WHERE mm_id = :mm_id;";
+        $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':mm_id', $mm_id, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $mm_price = $row['mm_price'];
-                        
-        $sql = "INSERT INTO monster_auction(ma_ra_id, ma_mm_id, ma_price) VALUES(:ra_id, :mm_id)";
+        
+        $sql = "INSERT INTO monster_auction(ma_ra_id, ma_mm_id, ma_price) VALUES(:ra_id, :mm_id, :price);";
+        $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
         $stmt->bindValue(':mm_id', $mm_id, PDO::PARAM_INT);
         $stmt->bindValue(':price', $mm_price, PDO::PARAM_INT);
@@ -77,6 +83,7 @@ try{
     $code = RoomDao::joinRoom($rm_id, $um_id);
     /**/
 }catch(Exception $e){
+    echo $e->getMessage();
     Page::complete(550);
 }
 
