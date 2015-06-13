@@ -34,7 +34,6 @@ $activetime = Time::getActive();
 
 
 try{
-        
     // 一定時間更新のないユーザーを削除
     ActiveDao::delTimeoutUsers($activetime);
 
@@ -43,6 +42,10 @@ try{
 
     // 作成から一定時間経っている、もしくはppl=0のルームのstatを"closed"へ更新
     RoomDao::closeRoom($closetime);
+    // XXX:"closed"へ変更したルームで使用するレコードを削除
+    // - room_auction/monster_auction
+    //   ra_idを取得し、monster_auctionレコードを全て削除してからroom_auctionを削除
+    
 
     // statが"wait"の部屋を全件取得
     $roomlist = RoomDao::getWaitingRooms();

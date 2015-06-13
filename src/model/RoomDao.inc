@@ -62,6 +62,7 @@ class RoomDao{
     public static function joinRoom($rm_id, $um_id){
         //transaction
         // XXX: 人数を見る
+        
         $stmt = RM::getRoom($rm_id);
         $row = $stmt->fetch();
         if($row['rm_max'] > $row['rm_ppl']){

@@ -43,16 +43,18 @@ CREATE TABLE `user_active` (
 CREATE TABLE `room_auction` (
     `ra_id` int(11) NOT NULL AUTO_INCREMENT,
 	`ra_rm_id` int(11),
-	`ra_ma_id` int(11),
-    
+	`ra_ma_id` int(11), -- 現在のオークション
+
+	`ra_time` datetime, -- オークション系各種処理の開始時間
+	
     `ra_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`ra_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 CREATE TABLE `monster_auction` (
     `ma_id` int(11) NOT NULL AUTO_INCREMENT,
-	`ma_ma_id` int(11),
-	`ma_ru_id` int(11),
+	`ma_ra_id` int(11), -- このレコードを使用するroom_auctionレコードの指定
+	`ma_ru_id` int(11), -- 落札者id
 	
 	`ma_mm_id` int(11),
 	`ma_price` integer,
@@ -72,3 +74,7 @@ CREATE TABLE `monster_master` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 
+CREATE TABLE `room_tour` (
+    `rt_id` int(11) NOT NULL AUTO_INCREMENT
+	
+);

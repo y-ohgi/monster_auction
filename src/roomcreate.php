@@ -8,6 +8,9 @@ require_once('controller/User.inc');
 require_once('model/RoomDao.inc');
 require_once('model/ActiveDao.inc');
 
+//-----
+//require_once('model/Dbh.inc');
+
 
 // POSTじゃなかった場合
 if($_SERVER["REQUEST_METHOD"] != "POST"){
@@ -37,15 +40,44 @@ try{
     // roomを登録
     $rm_id = RoomDao::addRoom($room_title, $room_max);
 
-    // XXX: ルーム用のmonster_auctionレコードを人数分作成
     
+    // XXX: ルーム用のroom_auctionレコードを作成後
+    //       monster_auctionレコードを$room_max分作成
+    $time = Carbon::now();
+
+    // モンスター数分の数値の格納された配列
+    $ma_mmid_ary = range(1..20);
+    shuffle($ma_mmid_ary);
+
+    $sql = "INSER INTO room_auction(ra_rm_id, ra_time) VALUES(:rm_id, :time)";
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
+    $stmt->bindValue(':time', $time, PDO::PARAM_STR);
+    $stmt->execute();
+    $ra_id = $stmt->lastInsertId();
+    
+    // 人数分のmonster_auctionレコードを作成
+    for($i=0;$i<$room_max;$i++){
+        $mm_id = $ma_mmid_ary[$i];
+        // mmから取り出し
+        $sql = "SELECT * FROM monster_master WHERE mm_id = :mm_id";
+        $stmt->bindValue(':mm_id', $mm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $mm_price = $row['mm_price'];
+                        
+        $sql = "INSERT INTO monster_auction(ma_ra_id, ma_mm_id, ma_price) VALUES(:ra_id, :mm_id)";
+        $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
+        $stmt->bindValue(':mm_id', $mm_id, PDO::PARAM_INT);
+        $stmt->bindValue(':price', $mm_price, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 
     // ルームに参加
-    //   Xxx::joinRoom($rm_id)
     $code = RoomDao::joinRoom($rm_id, $um_id);
     /**/
 }catch(Exception $e){
     Page::complete(550);
 }
 
-Page::complete(200);
+Page::complete($code);
