@@ -30,25 +30,38 @@ if(!$ua_id){
 //$ru_id = $user->getRUid();
 $rm_id = $user->getRMid();
 
+// オークション開始までの残り秒数
 $time = 0;
 
 try{
     $time_start = microtime(true);
     
-    // XXX: オークションidを取得しに行き、なかった場合は初期処理を行い、オークションidを改めて取得
-    //  複数作られる可能性がありそう
-    
-    // XXX: room_auctionを取得
-    //  -> XXX: 取得できなかった場合は新しくレコードを挿入
-    //    -> XXX: room_auction.rm_id .ma_id を挿入
+    // XXX: ルーム内オークション管理レコードから時間(ra_time)を取得、なかった場合は現在時刻を挿入
+    $sql = "SELECT * FROM room_auction WHERE ra_rm_id = :rm_id;";
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $ra_id = $row['ra_id'];
+    $ra_time = $row['ra_time'];
+    if(!$ra_time){
+        $ra_time = Time::getNow();
+        $sql = "UPDATE room_auction SET ra_time =:ra_time WHERE ra_id = :ra_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":ra_time", $ra_time, PDO::PARAM_STR);
+        $stmt->bindValue(":ra_id", $ra_time, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 
-    // XXX: room_auction.createdを取得
+    // その時間は過ぎたか
+    if($ra_time->addSecond(Time::getAuctionStart())->isPast()){
+        // 別ページヘのリクエストを勧める
+        Page::complete(300);
+    }
 
-    // XXX: createdにTime::getAuctionStart()を足し、isPast()を行う
+    $now = Time::getNow();
+    $time = $ra_time->diffInSeconds($now);
 
-    // -> XXX: 過ぎていた場合はstatus:250を返す
-    // -> XXX: 過ぎていなかった場合はstatus:200, time: $timeを返す
-    
 }catch(Exception $e){
     Dbh::get()->rollback();
     Page::complete(550);

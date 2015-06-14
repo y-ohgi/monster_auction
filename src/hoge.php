@@ -1,22 +1,35 @@
 <?php
 
-require_once(dirname(__FILE__).'/../lib/Carbon/Carbon.php');
-use Carbon\Carbon;
+require_once('model/Dbh.inc');
+
+$sql = "SELECT * FROM room_master WHERE rm_id = 100;";
+$stmt = Dbh::get()->prepare($sql);
+$stmt->execute();
+
+var_dump($stmt->fetch(PDO::FETCH_ASSOC));
+
 
 require_once('controller/Time.inc');
+echo Time::getNow();
 
 
-function b(){
-    echo "<br />";
-}
+// require_once(dirname(__FILE__).'/../lib/Carbon/Carbon.php');
+// use Carbon\Carbon;
 
-$time = "2015-06-03 17:25:57";
+// require_once('controller/Time.inc');
 
-$created = Carbon::parse($time);
-//$created = Carbon::now();
-$targettime = $created->copy()->addSeconds(Time::getAuctionStart());
 
-echo $diff = $created->diffInSeconds($targettime);
+// function b(){
+//     echo "<br />";
+// }
+
+// $time = "2015-06-03 17:25:57";
+
+// $created = Carbon::parse($time);
+// //$created = Carbon::now();
+// $targettime = $created->copy()->addSeconds(Time::getAuctionStart());
+
+// echo $diff = $created->diffInSeconds($targettime);
 /*
 // Time::AuctionStart()秒分経ったか
 if($targettime->isPast()){
