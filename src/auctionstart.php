@@ -1,6 +1,10 @@
 <?php
-// gameauction.php
 
+// auctionstart.php
+/*
+ * ダメです使いません
+ *  全部auctionmiddleで行います
+  
 require_once('controller/Page.inc');
 require_once('controller/Util.inc');
 require_once('controller/Time.inc');
@@ -34,11 +38,9 @@ $timer;
 
 
 try{
-    /*
-    // 人数差を求める
-    $sql = 'SELECT * FROM room_master WHERE rm_id = :rm_id;';
-    if($row['rm_ppl'] === $row['rm_max']){}
-     */
+    // // 人数差を求める
+    // $sql = 'SELECT * FROM room_master WHERE rm_id = :rm_id;';
+    // if($row['rm_ppl'] === $row['rm_max']){}
 
     // 現在のオークションを取得
     $sql = 'SELECT * FROM room_auction WHERE ra_rm_id = :rm_id;';
@@ -79,3 +81,4 @@ try{
 
 Page::complete(200, $timer);
 
+/**/

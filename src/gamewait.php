@@ -61,10 +61,20 @@ try{
     $maxflg = RoomDao::chkPpl($rm_id);
     // あとで分ける
     if($maxflg){
-        $sql = 'UPDATE room_master SET rm_stat = "auction" WHERE rm_id = :rm_id;';
+        $sql = "SELECT * FROM room_master WHERE rm_id = :rm_id;";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue($rm_id);
         $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stat = $row['rm_stat'];
+        
+        // XXX: 直したい。statは数値にすればよかった.
+        if($stat = "wait"){
+            $sql = 'UPDATE room_master SET rm_stat = "auctionwait" WHERE rm_id = :rm_id;';
+            $stmt = Dbh::get()->prepare($sql);
+            $stmt->bindValue($rm_id);
+            $stmt->execute();
+        }
     }
     /**/
 }catch(Exception $e){

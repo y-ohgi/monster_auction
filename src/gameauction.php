@@ -43,17 +43,9 @@ try{
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $ra_id = $row['ra_id'];
-    $ra_time = $row['ra_time'];
-    if(!$ra_time){
-        $ra_time = Time::getNow();
-        $sql = "UPDATE room_auction SET ra_time =:ra_time WHERE ra_id = :ra_id;";
-        $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(":ra_time", $ra_time, PDO::PARAM_STR);
-        $stmt->bindValue(":ra_id", $ra_time, PDO::PARAM_INT);
-        $stmt->execute();
-    }
-
-    // その時間は過ぎたか
+    $ra_time = $row['ra_created'];
+    
+    // 待機時間は過ぎたか
     if($ra_time->addSecond(Time::getAuctionStart())->isPast()){
         // 別ページヘのリクエストを勧める
         Page::complete(300);
