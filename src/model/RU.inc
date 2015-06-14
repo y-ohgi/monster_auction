@@ -3,11 +3,12 @@
 require_once('Dbh.inc');
 
 class RU{
-    public static function addUser($rm_id, $um_id){
-        $sql = 'INSERT INTO room_user(ru_rm_id, ru_um_id) VALUES(:rm_id, :um_id);';
+    public static function addUser($rm_id, $um_id, $ru_money){
+        $sql = 'INSERT INTO room_user(ru_rm_id, ru_um_id, ru_money) VALUES(:rm_id, :um_id, :ru_money);';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
         $stmt->bindValue(':um_id', $um_id, PDO::PARAM_INT);
+        $stmt->bindValue(':ru_money', $ru_money, PDO::PARAM_INT);
         $stmt->execute();
     }
 

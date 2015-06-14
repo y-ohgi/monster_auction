@@ -25,6 +25,7 @@ CREATE TABLE  `room_user` (
     `ru_id` int(11) NOT NULL AUTO_INCREMENT,
     `ru_um_id` int(11),
     `ru_rm_id` int(11),
+	`ru_money` int(11),
     
     `am_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`ru_id`)

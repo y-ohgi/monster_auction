@@ -62,12 +62,13 @@ class RoomDao{
     public static function joinRoom($rm_id, $um_id){
         //transaction
         // XXX: 人数を見る
-        
+        // とりあえずここで所持金を設定
+        $ru_money = 10000;
         $stmt = RM::getRoom($rm_id);
         $row = $stmt->fetch();
         if($row['rm_max'] > $row['rm_ppl']){
             // room_userに追加
-            RU::addUser($rm_id, $um_id);
+            RU::addUser($rm_id, $um_id, $ru_money);
             // room_master.pplにインクリメント
             RM::addPpl($rm_id);
 

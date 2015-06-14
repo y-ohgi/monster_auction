@@ -59,7 +59,9 @@ try{
     
     // XXX: 現在のルーム内人数が埋まったかを確認
     $maxflg = RoomDao::chkPpl($rm_id);
-    // あとで分ける
+    // あとで"""絶対に"""分ける
+    // XXX: Page::ルームステータスチェック($想定する現在のステータス, $変更するステータス)
+    //       みたいなのを作る
     if($maxflg){
         $sql = "SELECT * FROM room_master WHERE rm_id = :rm_id;";
         $stmt = Dbh::get()->prepare($sql);

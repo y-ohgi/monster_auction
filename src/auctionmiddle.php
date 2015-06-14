@@ -13,7 +13,8 @@ require_once('model/UserDao.inc');
 $response = array(
     "status"=>null,
     "timer"=>null,
-    "ma_id"=>null,
+    "auction_id"=>null, //"ma_id"=>null,
+    "monster_id"=>null,
     "user_id"=>null,
     "price"=>null
 );
@@ -34,71 +35,39 @@ if(!$ua_id){
 //$rm_id = $user->getRMid();
 
 
-$timer;
+// 残り時間
+$time;
 
 
 try{
-    // ra_ma_idが存在しなかった場合
-    
-    $sql = 'SELECT * FROM room_auction WHERE ra_rm_id = :rm_id;';
+    // ステータスチェック
+    //  XXX: ステータスバリデート($想定するステータス); 違ったら300を返す。をつくる
+    $sql = "SELECT * FROM room_master WHERE rm_id = :rm_id;";
     $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
+    $stmt->bindValue($rm_id);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    $ra_id = $row['ra_id'];
-    $ma_id = $row['ra_ma_id'];
-
-    // 時間チェック
-    $created = Carbon::parse($row['ra_created']);
-    $targettime = $created->copy()->addSeconds(Time::getAuctionTime());
-    if($targettime->isPast()){
-        // XXX:room_auctionが参照するmonster_auctionを変更
-        $sql = "SELECT * FROM monster_auction WHERE ma_ra_id = :ra_id OR ma_closeflg !=true;";
-        $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        $new_maid = $row['ma_id'];
-
-        $sql = 'UPDATE room_auction SET ra_ma_id = :ma_id WHERE ra_id = :ra_id;';
-        $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ma_id', $new_maid, PDO::PARAM_INT);
-        $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-
-        // 残り時間を設定
-        $timer = Time::getAuctionTime();
-    // 残り秒を求める
-    }else{
-        $timer = $created->diffInSeconds($targettime);
+    $stat = $row['rm_stat'];
+    if(!$stat = "auction"){
+        Page::complete(300);
     }
+    
 
-    
-    $sql = 'SELECT * FROM monster_auction WHERE ma_id = :ma_id;';
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(":ma_id", $ma_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $price = $row['ma_price'];
-    
-    
-    $ru_id = $row['ma_ru_id'];
-    // ru_idからum_idを取得
-    $sql = "SELECT * FROM room_user WHERE ru_id = :ru_id;";
-    $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(":ru_id", $ru_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $user_id = $row['ru_um_id'];
-    
-    
+    // 現在のオークション(ra_ma_id)が開催されているかのチェック
+    // * カラムがnullだった場合は新規にra_ma_idを設定
+    // * 数値が入っていた場合は残り時間を取得($time)
+    //   - 残り時間を過ぎていた場合は現在設定されているma_idのレコードのma_closeflgをtrueにし、
+    //      monste_auctionからma_closeflgがnullのma_idが若い物を新規に設定する
+    //     - ma_closeflgが全てtrueになった場合、シーン遷移処理を行う
+    //   - 残り時間内だった場合
+    //     - 現在のmonster_auction.ma_idを取得($ma_id)
+    //     - 現在のmonster_auction.ma_ru_idを取得し、user_master.um_idを取得する($user_id)
+    //     - 現在のmonster_auction.ma_mm_idを取得する($monster_id)
+    //     - 現在のmonster_auction.ma_priceを取得する($price)    
 }catch(Exception $e){
     //echo $e->getMessage();
     Page::complete(550);
 }
 
-Page::complete(200, $timer, $ma_id, $user_id, $price);
+Page::complete(200, $time, $ma_id, $monster_id, $user_id, $price);
 

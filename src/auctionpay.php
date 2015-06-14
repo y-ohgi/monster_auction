@@ -12,7 +12,7 @@ require_once('model/UserDao.inc');
 // req:
 $uuid = Util::h($_POST['uuid']);
 $price = Util::h($_POST['price']);
-$ma_id = Util::h($_POST['ma_id']);
+$ma_id = Util::h($_POST['auction_id']);
 // res:
 $response = array(
     "status"=>null,
@@ -28,12 +28,9 @@ $ua_id = $user->getUAid();
 if(!$ua_id){
     Page::complete(453);
 }
-//$ru_id = $user->getRUid();
+$ru_id = $user->getRUid();
 $rm_id = $user->getRMid();
 
-
-// どっかでDBに
-$now_price = 10000;
 
 
 try{
@@ -52,7 +49,16 @@ try{
     }
 
     
-    // $priceは所持金以内に収まっているか
+    // userの現在の所持金を取得
+    $sql = "SELECT * FROM room_user WHERE ru_id = :ru_id;";
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(":ru_id", $ru_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $now_price = $row['ru_price'];
+
+    
+    // $priceは所持金以内に収まっていた場合落札
     if($now_price >= $price){
         // monster_auctionを更新
         $sql = 'UPDATE monster_auction SET ma_price = :price WHERE ma_id = :ma_id;';
