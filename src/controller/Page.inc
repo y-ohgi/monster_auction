@@ -32,19 +32,16 @@ class Page{
     // 処理を終了
     //  引数にはresponseのkey順
     public static function complete(){
-        // try{
-            if(func_num_args()){
-                $i = 0;
-                foreach(static::$response as $key=>$value){
-                    static::$response[$key] = func_get_arg($i);
-                    //            throw new Exception("お茶を濁す");
-                    $i++;
+        if(func_num_args() === 1){
+            static::$response = array("status"=> func_get_arg(0) );
+        }else{
+            $i = 0;
+            foreach(static::$response as $key=>$value){
+                static::$response[$key] = func_get_arg($i);
+                $i++;
                     
-                }
             }
-        // }catch(Exception $e){
-        //     echo $e->getMessage();
-        // }
+        }
         
         Dbh::disconnect();
        

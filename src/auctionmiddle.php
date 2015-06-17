@@ -10,6 +10,10 @@ require_once('model/RoomDao.inc');
 require_once('model/UserDao.inc');
 
 
+// POSTじゃなかった場合
+if($_SERVER["REQUEST_METHOD"] != "POST"){
+    Page::complete(400);
+}
 
 // res:
 $response = array(
@@ -22,14 +26,11 @@ $response = array(
 );
 Page::setRes($response);
 // req:
-try{
-    if(UserDao::authUser($uuid) !== true){
-        Page::complete(452);
-    }
-}catch(Exception $e){
-    echo '{"status": "452"}';
+$uuid = Util::h($_POST['uuid']);
+
+if(UserDao::authUser($uuid) !== true){
+    Page::complete(452);
 }
-$uuid = Util::h(@$_POST['uuid']);
 
 
 $user = new User($uuid);
