@@ -22,8 +22,12 @@ $response = array(
 );
 Page::setRes($response);
 // req:
-if(UserDao::authUser($uuid) !== true){
-    Page::complete(452);
+try{
+    if(UserDao::authUser($uuid) !== true){
+        Page::complete(452);
+    }
+}catch(Exception $e){
+    echo '{"status": "452"}';
 }
 $uuid = Util::h(@$_POST['uuid']);
 
