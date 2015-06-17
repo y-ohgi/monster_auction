@@ -25,7 +25,7 @@ Page::setRes($response);
 if(UserDao::authUser($uuid) !== true){
     Page::complete(452);
 }
-$uuid = Util::h($_POST['uuid']);
+$uuid = Util::h(@$_POST['uuid']);
 
 
 $user = new User($uuid);
