@@ -38,8 +38,8 @@ $ua_id = $user->getUAid();
 if(!$ua_id){
     Page::complete(453);
 }
-//$ru_id = $user->getRUid();
-//$rm_id = $user->getRMid();
+$ru_id = $user->getRUid();
+$rm_id = $user->getRMid();
 
 // room_auctionに入れる時間
 $now = Time::getNow();
