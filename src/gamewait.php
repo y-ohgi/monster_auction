@@ -26,7 +26,7 @@ if(UserDao::authUser($uuid) !== true){
 $user = new User($uuid);
 $ua_id = $user->getUAid();
 if(!$ua_id){
-    Page::complete(453);
+    Page::complete("453!");
 }
 $ru_id = $user->getRUid();
 $rm_id = $user->getRMid();
@@ -50,7 +50,7 @@ try{
 
     // XXX: 同じルーム内の一定時間反応の無い者をルームから削除
     ActiveDao::delTimeoutUserFromRoom($rm_id, $activetime);
-    
+
     // XXX: 現在のルームのroom_master.pplの更新
     RoomDao::updRoomppl();
     
