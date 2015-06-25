@@ -49,15 +49,15 @@ try{
     if($ra_time->addSecond(Time::getAuctionStart())->isPast()){
         $sql = "SELECT * FROM room_master WHERE rm_id = :rm_id;";
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue($rm_id);
+        $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stat = $row['rm_stat'];
         
-        if($stat = "auctionwait"){
+        if($stat == "auctionwait"){
             $sql = 'UPDATE room_master SET rm_stat = "auction" WHERE rm_id = :rm_id;';
             $stmt = Dbh::get()->prepare($sql);
-            $stmt->bindValue($rm_id);
+            $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
             $stmt->execute();
         }
         
