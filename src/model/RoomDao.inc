@@ -47,7 +47,8 @@ class RoomDao{
         $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
         $stmt->execute();
         $rm = $stmt->fetch();
-        if($rm['rm_ppl'] > $rm['rm_max']){
+        // if($rm['rm_ppl'] > $rm['rm_max']){
+        if($rm['rm_ppl'] == $rm['rm_max']){
             $maxflg = true;
         }
         return $maxflg;
