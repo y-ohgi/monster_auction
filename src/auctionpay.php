@@ -55,11 +55,11 @@ try{
     $stmt->bindValue(":ru_id", $ru_id, PDO::PARAM_INT);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $now_price = $row['ru_price'];
+    $my_price = $row['ru_price'];
 
     
     // $priceは所持金以内に収まっていた場合落札
-    if($now_price >= $price){
+    if($my_price >= $price){
         // monster_auctionを更新
         $sql = 'UPDATE monster_auction SET ma_price = :price WHERE ma_id = :ma_id;';
         $stmt = Dbh::get()->prepare($sql);
