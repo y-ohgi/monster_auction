@@ -50,7 +50,7 @@ try{
 
     // XXX: 同じルーム内の一定時間反応の無い者をルームから削除
     ActiveDao::delTimeoutUserFromRoom($rm_id, $activetime);
-
+    
     // XXX: 現在のルームのroom_master.pplの更新
     RoomDao::updRoomppl();
     

@@ -36,7 +36,7 @@ class RoomDao{
             );
         }
         return $memberlist;
-
+        
     }
 
     public static function chkPpl($rm_id){

@@ -28,7 +28,8 @@ CREATE TABLE  `room_user` (
 	`ru_money` int(11),
     
     `am_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`ru_id`)
+    PRIMARY KEY (`ru_id`),
+    UNIQUE KEY `ru_um_id` (`ru_um_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 CREATE TABLE `user_active` (
