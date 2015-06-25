@@ -53,7 +53,7 @@ try{
     //  XXX: ステータスバリデート($想定するステータス); 違ったら300を返す。をつくる
     $sql = "SELECT * FROM room_master WHERE rm_id = :rm_id;";
     $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue($rm_id);
+    $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $ra_id = $row['ra_id'];
@@ -66,7 +66,7 @@ try{
     // 現在のオークション(ra_ma_id)が開催されているかのチェック
     $sql = "SELECT * FROM room_auction WHERE ra_id = :ra_id;";
     $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(':ma_id', $ra_id);
+    $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
     $stmt->execute();
     $ra_ma_id = $row['ra_ma_id'];
     
@@ -74,15 +74,15 @@ try{
     if(!$ra_ma_id){
         $sql = "SELECT * FROM monster_auction WHERE ma_ra_id = :ra_id;";
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ma_id', $ra_id);
+        $stmt->bindValue(':ma_id', $ra_id, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetchColumn(PDO::FETCH_ASSOC);
         $ma_id = $row['ma_id'];
 
         $sql = "UPDATE room_auction SET ra_ma_id = :ma_id, ra_time = :ra_time WHERE ra_id = :ra_id;";
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ma_id', $ma_id);
-        $stmt->bindValue(':ra_time', $now);
+        $stmt->bindValue(':ma_id', $ma_id, PDO::PARAM_INT);
+        $stmt->bindValue(':ra_time', $now, PDO::PARAM_STR);
         $stmt->execute();
             
     }else{
@@ -95,14 +95,14 @@ try{
         if($time->addSecond(Time::getAuctionTime())->isPast()){
             $sql = "UPDATE monster_auction SET ma_closeflg = 'true' WHERE ma_id = :ma_id;";
             $stmt = Dbh::get()->prepare($sql);
-            $stmt->bindValue(':ma_id', $ra_ma_id);
+            $stmt->bindValue(':ma_id', $ra_ma_id, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
             $sql = "SELECT * FROM monster_auction WHERE ma_ra_id = :ra_id AND ra_closeflg != 'true' LIMIT 1;";
             $stmt = Dbh::get()->prepare($sql);
-            $stmt->bindValue(':ru_id', $ru_id);
+            $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$row){
@@ -121,14 +121,17 @@ try{
         }
         //   - 残り時間内だった場合現在のroom_auctionを取得しする
         $sql = "SELECT * FROM room_auction WHERE ra_id = :ra_id;";
-        
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ra_id', $ra_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         //     - 現在のmonster_auction.ma_idを取得($ma_id)
         $ma_id = $row['ma_id'];
                 
         //     - 現在のmonster_auction.ma_ru_idを取得し、user_master.um_idを取得する($user_id)
         $sql = "SELECT * FROM room_user WHERE ru_id = :ru_id;";
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ru_id', $ru_id);
+        $stmt->bindValue(':ru_id', $ru_id, PDO::PARAM_INT);
         $stmt->execute();
 
         $rurow = $stmt->fetch(PDO::FETCH_ASSOC);
