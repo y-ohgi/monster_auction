@@ -64,10 +64,11 @@ class ActiveDao{
             $ua = $stmt->fetch(PDO::FETCH_ASSOC);
             $uaid = $ua['ua_id'];
             if($ua['ua_time'] > $time){
-                // XXX: user_activeからユーザーを削除
-                UA::delUser($uaid);
-                // XXX: room_userからユーザーを削除
-                UserDao::delUser($ruid, $rmid);
+                var_dump($ua['ua_id']);
+                // // XXX: user_activeからユーザーを削除
+                // UA::delUser($uaid);
+                // // XXX: room_userからユーザーを削除
+                // UserDao::delUser($ruid, $rmid);
             }
         }
 
