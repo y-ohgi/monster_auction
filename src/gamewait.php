@@ -65,16 +65,16 @@ try{
     if($maxflg){
         $sql = "SELECT * FROM room_master WHERE rm_id = :rm_id;";
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue($rm_id);
+        $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stat = $row['rm_stat'];
         
         // XXX: 直したい。statは数値にすればよかった.
-        if($stat = "wait"){
+        if($stat == "wait"){
             $sql = 'UPDATE room_master SET rm_stat = "auctionwait" WHERE rm_id = :rm_id;';
             $stmt = Dbh::get()->prepare($sql);
-            $stmt->bindValue($rm_id);
+            $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
             $stmt->execute();
         }
     }
