@@ -26,7 +26,7 @@ if(UserDao::authUser($uuid) !== true){
 $user = new User($uuid);
 $ua_id = $user->getUAid();
 if(!$ua_id){
-    Page::complete(453);
+    Page::complete(4533);
 }
 $ru_id = $user->getRUid();
 $rm_id = $user->getRMid();
