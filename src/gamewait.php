@@ -9,6 +9,9 @@ require_once('model/RoomDao.inc');
 require_once('model/ActiveDao.inc');
 require_once('model/UserDao.inc');
 
+require_once(dirname(__FILE__). '/../../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
 // req:
 $uuid = Util::h($_POST['uuid']);
 // res:
@@ -67,6 +70,7 @@ try{
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         $uatime = $row['ua_time'];
+        echo $uatime;
         if(Carbon::parse($uatime)->isPast()){
             // ルーム内に残る
         }else{
