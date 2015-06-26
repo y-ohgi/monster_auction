@@ -67,7 +67,7 @@ class ActiveDao{
             $ua = $stmt->fetch(PDO::FETCH_ASSOC);
             $uaid = $ua['ua_id'];
             echo $ua['ua_time'];
-            if(!$ua['ua_time']->isPast()){
+            if(!Carbon::parse($ua['ua_time'])->isPast()){
                 // XXX: user_activeからユーザーを削除
                 UA::delUser($uaid);
                 // XXX: room_userからユーザーを削除
