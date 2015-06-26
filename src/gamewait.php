@@ -49,7 +49,33 @@ try{
     }
 
     // XXX: 同じルーム内の一定時間反応の無い者をルームから削除
-    ActiveDao::delTimeoutUserFromRoom($rm_id, $activetime);
+    //ActiveDao::delTimeoutUserFromRoom($rm_id, $activetime);
+    // 現在のルーム内のユーザーを取得
+    $sql = "SELECT * FROM room_user WHERE ru_rm_id = :rm_id;";
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(':rm_id', $rm_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 各ユーザーのra.ra_timeを取得
+    foreach($rows as $row){
+        $ruid = $row['ru_id'];
+        $sql = "SELECT * FROM user_active WHERE ra_ru_id = :ru_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(':ruid', $ruid, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $uatime = $row['ua_time'];
+        if(Carbon::parse($uatime)->isPast()){
+            // ルーム内に残る
+        }else{
+            // ルーム内から削除
+            UA::delUser($uaid);
+            UserDao::delUser($ruid, $rmid);
+        }
+    }
+    
 
     // XXX: 現在のルームのroom_master.pplの更新
     RoomDao::updRoomppl();
