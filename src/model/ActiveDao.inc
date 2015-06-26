@@ -6,6 +6,9 @@ require_once('UM.inc');
 require_once('UA.inc');
 require_once('UserDao.inc');
 
+require_once(dirname(__FILE__).'/../../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
 class ActiveDao{
     public static function getUser($ua_id){
         $stmt = UA::getUser($ua_id);
@@ -63,7 +66,7 @@ class ActiveDao{
             $stmt->execute();
             $ua = $stmt->fetch(PDO::FETCH_ASSOC);
             $uaid = $ua['ua_id'];
-            if($ua['ua_time'] < $time){
+            if(!$ua['ua_time']->isPast()){
                 // XXX: user_activeからユーザーを削除
                 UA::delUser($uaid);
                 // XXX: room_userからユーザーを削除

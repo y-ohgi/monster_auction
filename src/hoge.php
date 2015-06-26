@@ -1,16 +1,20 @@
 <?php
 
-require_once('model/Dbh.inc');
-
-$sql = "SELECT * FROM room_master WHERE rm_id = 100;";
-$stmt = Dbh::get()->prepare($sql);
-$stmt->execute();
-
-var_dump($stmt->fetch(PDO::FETCH_ASSOC));
-
-
 require_once('controller/Time.inc');
-echo Time::getNow();
+
+echo Time::getActive();
+
+// require_once('model/Dbh.inc');
+
+// $sql = "SELECT * FROM room_master WHERE rm_id = 100;";
+// $stmt = Dbh::get()->prepare($sql);
+// $stmt->execute();
+
+// var_dump($stmt->fetch(PDO::FETCH_ASSOC));
+
+
+// require_once('controller/Time.inc');
+// echo Time::getNow();
 
 
 // require_once(dirname(__FILE__).'/../lib/Carbon/Carbon.php');
