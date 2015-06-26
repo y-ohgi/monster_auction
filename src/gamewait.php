@@ -62,7 +62,7 @@ try{
         $ruid = $row['ru_id'];
         $sql = "SELECT * FROM user_active WHERE ra_ru_id = :ru_id;";
         $stmt = Dbh::get()->prepare($sql);
-        $stmt->bindValue(':ruid', $ruid, PDO::PARAM_INT);
+        $stmt->bindValue(':ru_id', $ruid, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
