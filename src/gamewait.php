@@ -60,7 +60,7 @@ try{
     // 各ユーザーのra.ra_timeを取得
     foreach($rows as $row){
         $ruid = $row['ru_id'];
-        $sql = "SELECT * FROM user_active WHERE ra_ru_id = :ru_id;";
+        $sql = "SELECT * FROM user_active WHERE ua_ru_id = :ru_id;";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':ru_id', $ruid, PDO::PARAM_INT);
         $stmt->execute();
