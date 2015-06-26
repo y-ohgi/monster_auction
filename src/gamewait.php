@@ -70,7 +70,6 @@ try{
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         $uatime = $row['ua_time'];
-        echo $uatime;
         if(Carbon::parse($uatime)->isPast()){
             // ルーム内に残る
         }else{
