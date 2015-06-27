@@ -34,6 +34,7 @@ try{
     $code = RoomDao::joinRoom($rm_id, $um_id);
     
 }catch(Exception $e){
+    echo $e->getMessage();
     Page::complete(550);
 }
 

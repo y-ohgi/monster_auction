@@ -36,7 +36,8 @@ $um_id = $user->getId();
 
        
 try{
-    Dbh::get()->beginTransaction()
+    
+    Dbh::get()->beginTransaction();
     // XXX: userの最終ルーム作成時間を見て、一定時間経っていたor NULLの場合のみ作成可能
     // XXX: 作成したユーザーidの登録
 
