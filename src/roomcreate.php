@@ -36,6 +36,7 @@ $um_id = $user->getId();
 
        
 try{
+    Dbh::get()->beginTransaction()
     // XXX: userの最終ルーム作成時間を見て、一定時間経っていたor NULLの場合のみ作成可能
     // XXX: 作成したユーザーidの登録
 
@@ -81,9 +82,13 @@ try{
 
     // ルームに参加
     $code = RoomDao::joinRoom($rm_id, $um_id);
+
+    Dbh::get()->commit();
+
     /**/
 }catch(Exception $e){
-    echo $e->getMessage();
+    //echo $e->getMessage();
+    Dbh::get()->rollBack();
     Page::complete(550);
 }
 
