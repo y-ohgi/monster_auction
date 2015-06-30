@@ -1,8 +1,20 @@
 <?php
 
-require_once('controller/Time.inc');
 
-echo Time::getActive();
+
+class Test{
+    public function __constract(){
+        return "hoge";
+    }
+
+}
+
+$test = new Test();
+var_dump($test);
+
+// require_once('controller/Time.inc');
+//
+// echo Time::getActive();
 
 // require_once('model/Dbh.inc');
 

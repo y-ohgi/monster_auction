@@ -31,7 +31,6 @@ $ua_id = $user->getUAid();
 if(!$ua_id){
     Page::complete(4533);
 }
-
 $ru_id = $user->getRUid();
 $rm_id = $user->getRMid();
 
