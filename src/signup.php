@@ -14,6 +14,7 @@ $name = $_POST['name'];
 $response = array(
     "status"=>null
 );
+Page::setResponse($response);
 
 try{
     // 既存のuuid/nameではないか
