@@ -1,7 +1,14 @@
 <?php
 // statuslist.inc
-// jsonで返すstatusキーの値を格納
 
+//=========== room_master.rm_stat
+define("ROOM_WAIT", "wait");
+
+
+
+
+
+//============ jsonで返すstatus
 // 正常
 define("SUCCESS", 200);
 

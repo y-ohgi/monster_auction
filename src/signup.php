@@ -6,15 +6,15 @@ require_once('common/init.inc');
 require_once(ROOT_DIR . 'model/Dbh.inc');
 require_once(ROOT_DIR . 'controller/Page.inc');
 
+$response = array(
+    "status"=>null
+);
+Page::setResponse($response);
 
 
 $uuid = $_POST['uuid'];
 $name = $_POST['name'];
 
-$response = array(
-    "status"=>null
-);
-Page::setResponse($response);
 
 try{
     // 既存のuuid/nameではないか

@@ -3,12 +3,12 @@ class Page{
     protected static $response = array();
 
     // responseするデータ配列の初期設定
-    public static function setRes($ary){
+    public static function setResponse($ary){
         static::$response = $ary;
     }
 
     // $responseのvalueに値を設定
-    public static function incRes(){
+    public static function incResponse(){
         $i = 0;
         foreach(static::$response as $key=>$value){
             static::$response[$key] = func_get_arg($i);
@@ -17,12 +17,12 @@ class Page{
     }
 
     // 現在のresponseデータを返す
-    public static function getRes(){
+    public static function getResponse(){
         return static::$response;
     }
 
     // responseに配列を追加
-    public static function mergeRes($ary){
+    public static function mergeResponse($ary){
         static::$response = array_merge(self::$response, $ary);
     }
 
