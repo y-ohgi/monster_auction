@@ -2,8 +2,9 @@
 // statuslist.inc
 
 //=========== room_master.rm_stat
+// 待機状態
 define("ROOM_WAIT", "wait");
-
+// 
 
 
 
