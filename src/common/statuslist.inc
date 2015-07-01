@@ -30,3 +30,5 @@ define('SERVER_ERROR', 500);
 
 // ルームが満員
 define('FULL_OF_PEOPLE', 600);
+// ルームをTIME_ROOM_CANCREATE分以内に作っている
+define('CANT_CREATEROOM', 601);

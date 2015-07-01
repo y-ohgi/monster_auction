@@ -30,7 +30,7 @@ Page::setResponse($response);
 try{
 
     // ルーム人数が0人もしくはタイムアウトしているものを削除する
-    $time = Carbon::now()->subMinutes(TIME_ROOM_TIMEOUT);
+    $time = Carbon::now()->subMinutes(TIMER_ROOM_TIMEOUT);
     $sql = 'DELETE FROM room_master WHERE rm_ppl = 0 OR rm_created < :time;';
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(":time", $time, PDO::PARAM_STR);
