@@ -1,5 +1,11 @@
 <?php
 // １ユーザーを表すクラス
+require_once(ROOT_DIR . "common/init.inc");
+
+require_once(ROOT_DIR . 'model/Dbh.inc');
+
+require_once(ROOT_DIR . '../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
 
 class User{
     private $_user = null;

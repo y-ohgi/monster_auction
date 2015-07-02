@@ -1,4 +1,11 @@
 <?php
+require_once(ROOT_DIR . "common/init.inc");
+
+require_once(ROOT_DIR . 'model/Dbh.inc');
+
+require_once(ROOT_DIR . '../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
 class Page{
     protected static $response = array();
 
