@@ -28,9 +28,10 @@ Page::setResponse($response);
 // ルーム系
 try{
     Dbh::get()->beginTransaction();
-    
+
+    $room = new Room($rm_id);
     // roomへ参加
-    $room->join($um_id, $rm_id);
+    $room->join($um_id);
 
     // monsterlistを返す
     // XXX: SELECTでASしてkeyネーム変える必要有るかも
