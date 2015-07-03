@@ -10,11 +10,11 @@ require_once(ROOT_DIR . '../lib/Carbon/Carbon.php');
 use Carbon\Carbon;
 
 class Active{
-    private $_ra_id;
+    private $_ua_id;
     
-    public function __construct($ra_id = null){
-        if(isset($ra_id)){
-            $this->_ra_id = $ra_id;
+    public function __construct($ua_id = null){
+        if(isset($ua_id)){
+            $this->_ua_id = $ua_id;
         }
     }
 
@@ -23,15 +23,15 @@ class Active{
         // TODO: timeを作成
         $time = Carbon::now();
         
-        $sql = "INSERT INTO user_active(ua_ru_id, ua_time) VALUES(:ru_id, :ra_time);";
+        $sql = "INSERT INTO user_active(ua_ru_id, ua_time) VALUES(:ru_id, :ua_time);";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":ru_id", $ru_id, PDO::PARAM_INT);
-        $stmt->bindValue(":ra_time", $time, PDO::PARAM_STR);
+        $stmt->bindValue(":ua_time", $time, PDO::PARAM_STR);
         $stmt->execute();
-        $ra_id = Dbh::get()->lastInsertId();
+        $ua_id = Dbh::get()->lastInsertId();
 
-        $this->_ra_id = $ra_id;
-        return $ra_id;
+        $this->_ua_id = $ua_id;
+        return $ua_id;
     }
 
     // 生存確認
@@ -43,11 +43,11 @@ class Active{
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $time = Carbon::parse($row['ua_time']);
-        // 取得時間に30分足して現在時刻を過ぎていればtrue
+        // 取得時間に30分足して現在時刻を過ぎていれば30分以上ログインしていないことになるのでfalse
         if($time->addMinutes(TIMER_USER_TIMEOUT)->isPast()){
-            return true;
-        }else{
             return false;
+        }else{
+            return true;
         }
     }
 
@@ -63,7 +63,10 @@ class Active{
 
     // 削除
     public function delete(){
-
+        $sql = "DELETE FROM user_active WHERE ua_id = :ua_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":ua_id", $this->_ua_id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
 }

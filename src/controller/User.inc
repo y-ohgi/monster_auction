@@ -32,18 +32,18 @@ class User{
     // room_master.idを返す
     public function getRMid(){
         $um_id = $this->_user['um_id'];
-        $sql = 'SELECT * FROM room_user WHERE ru_um_id = :um_id;';
+
+        $sql = "SELECT ru_rm_id FROM room_user WHERE ru_um_id =:um_id";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':um_id', $um_id, PDO::PARAM_INT);
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $rm_id = $row['ru_rm_id'];
+        $rm_id = $stmt->fetchColumn();
+
         return $rm_id;
     }
     // room_user.idを返す
     public function getRUid(){
         $um_id = $this->_user['um_id'];
-        $ruser = RoomDao::getUserAtUM($um_id);
         $sql = 'SELECT * FROM room_user WHERE ru_um_id = :um_id;';
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(':um_id', $um_id, PDO::PARAM_INT);

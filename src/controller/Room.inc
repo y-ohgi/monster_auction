@@ -43,6 +43,8 @@ class Room{
         $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
         $stmt->execute();
         $ra_id = $stmt->fetchColumn();
+        // var_dump($ra_id);
+        // var_dump($this->_rm_id);
         
         // monster_auctionの削除
         $sql = "DELETE FROM monster_auction WHERE ma_ra_id = :ra_id";
@@ -66,6 +68,16 @@ class Room{
     
     // 入室処理
     public function join($um_id){
+        $sql = "SELECT rm_max FROM room_master WHERE rm_id = :rm_id";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $max = $stmt->fetchColumn();
+
+        if($max <= $this->getPpl()){
+            return false;
+        }
+
         // room_userに追加
         $sql = "INSERT INTO room_user(ru_um_id, ru_rm_id, ru_money) VALUES(:um_id, :rm_id, :money);";
         $stmt = Dbh::get()->prepare($sql);
@@ -82,6 +94,8 @@ class Room{
         // TODO: activeの初期処理
         $active = new Active();
         $active->create($ru_id);
+
+        return true;
     }
     // 退室処理
     public function leave($um_id){
@@ -97,11 +111,6 @@ class Room{
         $stmt->bindValue(":um_id", $um_id, PDO::PARAM_INT);
         $stmt->execute();
         
-        // rm_pplが0だった場合はdeleteを叩く
-        $this->updPpl();
-        if($this->getPpl() <= 0){
-            $this->delete();
-        }
     }
 
     // 現在の人数を更新
@@ -115,6 +124,9 @@ class Room{
         $stmt->execute();
         
         // XXX: rm_pplが0だった場合はdeleteを叩く
+        if(0 === $this->getPpl()){
+            $this->_delete();
+        }
     }
     // 現在の人数を取得
     public function getPpl(){
@@ -122,9 +134,23 @@ class Room{
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
         $stmt->execute();
-        $ppl = $stmt->fetchColumn(PDO::FETCH_ASSOC);
+        $ppl = $stmt->fetchColumn();
         
         return $ppl;
+    }
+    // 最大人数か
+    public function isMax(){
+        $sql = "SELECT rm_max FROM room_master WHERE rm_id = :rm_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $max = $stmt->fetchColumn();
+
+        if($max === $this->getPpl()){
+            return true;
+        }
+
+        return false;
     }
     
     public function getStat(){
@@ -135,5 +161,15 @@ class Room{
         $stat = $stmt->fetchColumn();
 
         return $stat;
+    }
+
+    public function getUsers(){
+        $sql = "SELECT um_id AS user_id, um_name AS name FROM room_user LEFT JOIN user_master ON room_user.ru_um_id = user_master.um_id WHERE room_user.ru_rm_id = :rm_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $users;
     }
 }
