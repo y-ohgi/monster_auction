@@ -217,6 +217,28 @@ $("#gamewait").click(function(e){
 	});
 });
 
+$("#gameauction").click(function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		url: DOMAIN+"gameauction.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
 
 
 window.onbeforeunload = function(){
