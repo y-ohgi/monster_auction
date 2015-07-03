@@ -59,7 +59,7 @@ try{
     foreach($rows as $row){
         $rmid = $row["rm_id"];
         $room = new Room($rmid);
-        $room->delete();
+        $room->updPpl();
     }
     
     // ルーム一覧を表示

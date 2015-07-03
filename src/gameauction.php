@@ -74,7 +74,7 @@ try{
 
     
 
-    Dbh::get()->rollback();
+    Dbh::get()->commit();
 }catch(Exception $e){
     //Dbh::get()->rollback();
     Page::complete(SERVER_ERROR);
