@@ -59,8 +59,20 @@ try{
     foreach($rows as $row){
         $rmid = $row["rm_id"];
         $room = new Room($rmid);
+    }
+
+    $sql = "SELECT * FROM room_master WHERE rm_stat = :stat;";
+    $stmt = Dbh::get()->prepare($sql);
+    $stmt->bindValue(":stat", ROOM_WAIT, PDO::PARAM_STR);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach($rows as $row){
+        $rmid = $row["rm_id"];
+        $room = new Room($rmid);
         $room->updPpl();
     }
+    
+    
     
     // ルーム一覧を表示
     $stat = ROOM_WAIT;
