@@ -45,6 +45,7 @@ try{
         
         $room = new Room($rmid);
         $room->leave($umid);
+        $room->updPpl();
     }
     
     // ルーム人数が0人もしくはタイムアウトしているものを取得し削除する

@@ -124,8 +124,8 @@ class Room{
         $stmt->execute();
         
         // XXX: rm_pplが0だった場合はdeleteを叩く
-        if(0 === $this->getPpl()){
-            $this->_delete();
+        if(0 == $this->getPpl()){
+            $this->delete();
         }
     }
     // 現在の人数を取得

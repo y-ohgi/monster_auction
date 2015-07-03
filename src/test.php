@@ -11,10 +11,17 @@ require_once(ROOT_DIR. 'controller/Auction.inc');
 
 require_once(ROOT_DIR. 'controller/Room.inc');
 
-$rm_id = 6;
+$rm_id = 4;
 
 $room = new Room($rm_id);
-$room->delete();
+$room->updPpl();
+
+
+
+// $rm_id = 4;
+
+// $room = new Room($rm_id);
+// $room->delete();
 //var_dump($room->getPpl());
 
 

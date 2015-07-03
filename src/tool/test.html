@@ -30,6 +30,10 @@
 			<input type="submit" id="roomjoin"/></td>
 	</tr>
 	<tr>
+		<th>ルーム退室</th>
+		<td><input type="submit" id="roomexit"/></td>
+	</tr>
+	<tr>
 		<th>メンバー待機</th>
 		<td><input type="submit" id="gamewait"/></td>
 	</tr>
@@ -156,6 +160,28 @@ $("#roomjoin").click(function(e){
 			console.log(data)
 			$("#result").val(JSON.stringify(data).toString());
 			$("#tbl_room_id").html(rm_id);
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#roomexit").click(function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		url: DOMAIN+"roomexit.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
 		},
 		error: function(data){
 			console.log(data);
