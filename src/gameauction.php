@@ -33,9 +33,11 @@ Page::setResponse($response);
 $timer = 0;
 
 $room = new Room($rm_id);
-if(ROOM_AUCTIONWAIT !== $room->getStat() || ROOM_WAIT  !== $room->getStat()){
-    Page::complete(SEE_OTHER);
-    return;
+if(ROOM_WAIT !== $room->getStat()){
+    if(ROOM_AUCTIONWAIT !== $room->getStat()){
+        Page::complete(SEE_OTHER);
+        return;
+    }
 }
 
 try{
@@ -50,12 +52,12 @@ try{
     $time = $stmt->fetchColumn();
 
     $now = Carbon::now();
-    
+
     if(is_null($time)){
         $sql = "UPDATE room_auction SET ra_time = :now WHERE ra_rm_id = :rm_id;";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
-        $stmt->bindValue(":time", $now, PDO::PARAM_STR);
+        $stmt->bindValue(":now", $now, PDO::PARAM_STR);
         $stmt->execute();
 
         $timer = TIMER_ROOM_WAIT2AUCTION;
@@ -66,14 +68,14 @@ try{
             $sql = "UPDATE room_master SET rm_stat = :stat WHERE rm_id = :rm_id;";
             $stmt = Dbh::get()->prepare($sql);
             $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
-            $stmt->bindValue(":stat", ROOM_AUCTION, PDO::PARAM_INT);
+            $stmt->bindValue(":stat", ROOM_AUCTION, PDO::PARAM_STR);
             $stmt->execute();
             
         }
     }
 
     
-
+    /**/
     Dbh::get()->commit();
 }catch(Exception $e){
     //Dbh::get()->rollback();
