@@ -33,8 +33,12 @@ Page::setResponse($response);
 $timer = 0;
 
 $room = new Room($rm_id);
-if(ROOM_WAIT !== $room->getStat()){
-    if(ROOM_AUCTIONWAIT !== $room->getStat()){
+if($room->isMax() === false){
+        Page::complete(SEE_OTHER);
+        return;
+}
+if(ROOM_AUCTIONWAIT !== $room->getStat()){
+    if(ROOM_WAIT !== $room->getStat()){
         Page::complete(SEE_OTHER);
         return;
     }
@@ -76,7 +80,7 @@ try{
 
     
     /**/
-    Dbh::get()->commit();
+    Dbh::get()->commi();
 }catch(Exception $e){
     //Dbh::get()->rollback();
     Page::complete(SERVER_ERROR);
