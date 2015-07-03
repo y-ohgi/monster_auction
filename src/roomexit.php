@@ -31,3 +31,6 @@ Page::setResponse($response);
 
 $room = new Room($rm_id);
 $room->leave($um_id);
+
+
+echo '{"status":200}';

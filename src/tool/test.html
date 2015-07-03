@@ -8,10 +8,207 @@
 </head>
 <body>
 <h1>TEST TOOL</h1>
-<form action="">
-	<input type="text" />
-	<input type="submit" />
-</form>
+
+<table>
+	<tr>
+		<th>新規登録</th>
+		<td><input type="text" placeholder="新規登録" id="name" /><input type="submit" id="signup"/></td>
+	</tr>
+	<tr>
+		<th>ルーム一覧</th>
+		<td><input type="submit" id="roomlist"/></td>
+	</tr>
+	<tr>
+		<th>ルーム作成</th>
+		<td><input type="text" placeholder="タイトル" id="title" />
+			<input type="text" placeholder="最大人数" id="max" />
+			<input type="submit" id="roomcreate"/></td>
+	</tr>
+	<tr>
+		<th>ルーム参加</th>
+		<td><input type="text" placeholder="room_id" id="room_id" />
+			<input type="submit" id="roomjoin"/></td>
+	</tr>
+	<tr>
+		<th>メンバー待機</th>
+		<td><input type="submit" id="gamewait"/></td>
+	</tr>
+</table>
+ 
+<textarea rows="5" cols="50" placeholder="レスポンス" id="result" ></textarea>
+
+<table border="1">
+	<tr>
+		<th>uuid</th>
+		<td id="tbl_uuid"></td>
+	</tr>
+	<tr>
+		<th>name</th>
+		<td id="tbl_name"></td>
+	</tr>
+	<tr>
+		<th>room_id</th>
+		<td id="tbl_room_id"></td>
+	</tr>
+</table>
 
 </body>
+<script type="text/javascript">
+
+var DOMAIN = "http://localhost:8888/serv_monster_auction/src/";
+var UUID = null;
+
+$.get(DOMAIN+"getuuid.php", function(data){
+	$("#tbl_uuid").html(data);
+	UUID = data;
+});
+
+$("#signup").click(function(e){
+	e.preventDefault();
+	var name = $("#name").val();
+	
+	$.ajax({
+		url: DOMAIN+"signup.php",
+		method: 'POST',
+		data:{
+			uuid: UUID,
+			name: name
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+			
+			$("#tbl_name").html(name);
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#roomlist").click(function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		url: DOMAIN+"roomlist.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#roomcreate").click(function(e){
+	e.preventDefault();
+	
+	var title = $("#title").val();
+	var max = $("#max").val();
+	
+	$.ajax({
+		url: DOMAIN+"roomcreate.php",
+		method: 'POST',
+		data:{
+			uuid: UUID,
+			room_title: title,
+			room_max: max
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+			$("#tbl_room_id").html(data.room_id);
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#roomjoin").click(function(e){
+	e.preventDefault();
+	
+	var rm_id = ~~($("#room_id").val());
+	
+	$.ajax({
+		url: DOMAIN+"roomjoin.php",
+		method: 'POST',
+		data:{
+			uuid: UUID,
+			room_id: rm_id
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+			$("#tbl_room_id").html(rm_id);
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#gamewait").click(function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		url: DOMAIN+"gamewait.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+
+
+window.onbeforeunload = function(){
+	$.ajax({
+		url: DOMAIN+"roomexit.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert(data.responseText);
+		}
+	});
+}
+
+</script>
+
 </html>

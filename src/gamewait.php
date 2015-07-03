@@ -80,7 +80,14 @@ try{
 
     $room->updPpl();
 
-    $maxflg = $room->isMax();
+    if($maxflg = $room->isMax()){
+        $sql = "UPDATE room_master SET rm_stat = :stat WHERE rm_id = :rm_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
+        $stmt->bindValue(":stat", ROOM_AUCTIONWAIT, PDO::PARAM_INT);
+        $stmt->execute();
+        
+    }
 
     // 現在のメンバーを返す
     $userlist = $room->getUsers();

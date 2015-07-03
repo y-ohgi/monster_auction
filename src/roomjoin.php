@@ -7,6 +7,7 @@ require_once(ROOT_DIR . 'controller/Page.inc');
 require_once(ROOT_DIR . 'controller/User.inc');
 
 require_once(ROOT_DIR . 'controller/Room.inc');
+require_once(ROOT_DIR . 'controller/Auction.inc');
 
 $uuid = $_POST['uuid'];
 $rm_id = $_POST['room_id'];
@@ -43,6 +44,7 @@ try{
 
     // monsterlistを返す
     // XXX: SELECTでASしてkeyネーム変える必要有るかも
+    $auction = new Auction();
     $monsterlist = $auction->getAuctionMonsters($rm_id);
     
     Dbh::get()->commit();

@@ -32,7 +32,8 @@ Page::setResponse($response);
 try{
     // 待機状態の部屋でタイムアウトしているユーザーを削除
     $time = Carbon::now()->subMinutes(TIMER_USER_TIMEOUT);
-    $sql = "SELECT * FROM room_user WHERE ru_id = (SELECT ua_ru_id FROM user_active WHERE ua_time < :time)";
+    //$sql = "SELECT * FROM room_user WHERE ru_id = (SELECT ua_ru_id FROM user_active WHERE ua_time < :time)";
+    $sql = "SELECT * FROM user_active LEFT JOIN room_user ON user_active.ua_ru_id = room_user.ru_id WHERE user_active.ua_time < :time;";
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(":time", $time, PDO::PARAM_STR);
     $stmt->execute();
@@ -68,7 +69,7 @@ try{
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $rooms = $rows? $rows : array();
-    
+    /**/
 }catch(Exception $e){
     Page::complete(SERVER_ERROR);
     echo $e->getMessage();

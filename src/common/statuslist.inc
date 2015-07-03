@@ -4,7 +4,10 @@
 //=========== room_master.rm_stat
 // 待機状態
 define("ROOM_WAIT", "wait");
-// 
+// オークション移行時のクッションページ
+define("ROOM_AUCTIONWAIT", "auctionwait");
+// オークション状態
+define("ROOM_AUCTION", "auction");
 
 
 
