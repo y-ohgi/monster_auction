@@ -36,9 +36,11 @@ $memberlist = array();
 
 // 現在のルームステータスのチェック
 $room = new Room($rm_id);
-if(ROOM_WAIT !== $room->getStat() || ROOM_AUCTIONWAIT !== $room->getStat()){
-    Page::complete(SEE_OTHER);
-    return;
+if(ROOM_WAIT !== $room->getStat()){
+    if(ROOM_AUCTIONWAIT !== $room->getStat()){
+        Page::complete(SEE_OTHER);
+        return;
+    }
 }
 
 // ユーザーがアクティブか

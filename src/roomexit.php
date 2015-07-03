@@ -1,6 +1,5 @@
 <?php
 
-
 require_once("common/init.inc");
 
 require_once(ROOT_DIR . 'model/Dbh.inc');
@@ -29,8 +28,14 @@ $response = array(
 );
 Page::setResponse($response);
 
-$room = new Room($rm_id);
-$room->leave($um_id);
-
+try{
+    $room = new Room($rm_id);
+    $room->leave($um_id);
+}catch(Exception $e){
+    Dbh::get()->rollback();
+    Page::complete(SERVER_ERROR);
+    echo $e->getMessage();
+    return;
+}
 
 echo '{"status":200}';
