@@ -68,7 +68,7 @@ try{
     }else{
         $timer = TIMER_ROOM_WAIT2AUCTION - intval(Carbon::parse($time)->diffInSeconds($now));
 
-        if(0 > $timer){
+        if(0 >= $timer){
             $sql = "UPDATE room_master SET rm_stat = :stat WHERE rm_id = :rm_id;";
             $stmt = Dbh::get()->prepare($sql);
             $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
@@ -80,7 +80,7 @@ try{
 
     
     /**/
-    Dbh::get()->commi();
+    Dbh::get()->commit();
 }catch(Exception $e){
     //Dbh::get()->rollback();
     Page::complete(SERVER_ERROR);

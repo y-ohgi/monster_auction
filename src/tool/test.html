@@ -7,7 +7,7 @@
 	<title>test_tool</title>
 </head>
 <body>
-<h1>TEST TOOL</h1>
+<!-- <h1>TEST TOOL</h1> -->
 
 <table>
 	<tr>
@@ -41,7 +41,24 @@
 		<th>オークション待機</th>
 		<td><input type="submit" id="gameauction"/></td>
 	</tr>
+	<tr>
+		<th>オークション情報取得</th>
+		<td><input type="submit" id="auction"/></td>
+	</tr>
+	<tr>
+		<th>オークション入札</th>
+		<td><input type="text" placeholder="入札価格" id="auction_price" />
+			<input type="text" placeholder="オークションid" id="auction_id" />
+			<input type="submit" id="auctionpay"/></td>
+	</tr>
+	<tr>
+		<th>オークション情報取得</th>
+			<td><input type="text" placeholder="オークションid" id="auctionresult_id" />
+			<input type="submit" id="auctionresult"/></td>
+	</tr>
 </table>
+
+
  
 <textarea rows="5" cols="50" placeholder="レスポンス" id="result" ></textarea>
 
@@ -135,6 +152,7 @@ $("#roomcreate").click(function(e){
 		},
 		dataType:'json',
 		success: function(data) {
+			console.log("hoge");
 			console.log(data)
 			$("#result").val(JSON.stringify(data).toString());
 			$("#tbl_room_id").html(data.room_id);
@@ -225,6 +243,80 @@ $("#gameauction").click(function(e){
 		method: 'POST',
 		data:{
 			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#auction").click(function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		url: DOMAIN+"auction.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#auctionpay").click(function(e){
+	e.preventDefault();
+	
+	var price = ~~($("#auction_price").val());
+	var auction_id = ~~($("#auction_id").val());
+	
+	$.ajax({
+		url: DOMAIN+"auctionpay.php",
+		method: 'POST',
+		data:{
+			uuid: UUID,
+			price: price,
+			auction_id: auction_id
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#auctionresult").click(function(e){
+	e.preventDefault();
+	
+	var auction_id = ~~($("#auctionresult_id").val());
+	
+	$.ajax({
+		url: DOMAIN+"auctionresult.php",
+		method: 'POST',
+		data:{
+			uuid: UUID,
+			auction_id: auction_id
 		},
 		dataType:'json',
 		success: function(data) {

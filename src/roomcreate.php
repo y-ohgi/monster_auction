@@ -53,15 +53,15 @@ try{
     $rm_id = $room->create($title, $max, $um_id);
     
     // オークションで使用する各種レコードを作成
-    $auction = new Auction();
-    $auction->create($rm_id, $max);
+    $auction = new Auction($rm_id);
+    $auction->create($max);
     
     // roomへ参加
     $room->join($um_id);
 
     // monsterlistを返す
     // XXX: SELECTでASしてkeyネーム変える必要有るかも
-    $monsterlist = $auction->getAuctionMonsters($rm_id);
+    $monsterlist = $auction->getAuctionMonsters();
     
     
     //Dbh::get()->rollback();

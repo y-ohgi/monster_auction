@@ -14,4 +14,6 @@ define('TIMER_USER_TIMEOUT', 30);
 // 待機部屋からオークションへ移行する時間(秒)
 define('TIMER_ROOM_WAIT2AUCTION', 10);
 
-
+// 1オークション時間
+//define('TIMER_AUCTION', 35);
+define('TIMER_AUCTION', 10);

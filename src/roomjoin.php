@@ -44,7 +44,7 @@ try{
 
     // monsterlistを返す
     // XXX: SELECTでASしてkeyネーム変える必要有るかも
-    $auction = new Auction();
+    $auction = new Auction($rm_id);
     $monsterlist = $auction->getAuctionMonsters($rm_id);
     
     Dbh::get()->commit();
