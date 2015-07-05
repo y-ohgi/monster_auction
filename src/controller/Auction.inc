@@ -181,6 +181,27 @@ class Auction{
         
     }
 
+    // 購入確定
+    public function cmpBuy(){
+        $sql = "UPDATE monster_auction SET ma_closeflg = true WHERE ma_id = (SELECT ra_ma_id FROM room_auction WHERE ra_rm_id = :rm_id);";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $sql = "SELECT ma_ru_id FROM room_auction LEFT JOIN monster_auction ON room_auction.ra_ma_id = monster_auction.ma_id WHERE ra_rm_id = :rm_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $ruid = $stmt->fetchColumn();
+        
+        $sql = "UPDATE room_user SET ru_money = ru_money - (SELECT ma_price FROM monster_auction WHERE ma_ru_id = :ru_id) WHERE ru_id = :ru_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":ru_id", $ruid, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    
+    
+
     // 新規登録 登録できるmonster_auctionが無かったらfalseを返す
     public function setAuction(){
         //$sql = "SELECT ma_id FROM monster_auction WHERE ma_ra_id = (SELECT ra_id FROM room_auction WHERE ra_rm_id = :rm_id LIMIT 1) AND ma_closeflg IS NULL;";

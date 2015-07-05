@@ -56,7 +56,9 @@ PRIMARY KEY (`ra_id`)
 CREATE TABLE `monster_auction` (
 `ma_id` int(11) NOT NULL AUTO_INCREMENT,
 `ma_ra_id` int(11), -- このレコードを使用するroom_auctionレコードの指定
-m
+
+`ma_ru_id` int(11),
+
 `ma_mm_id` int(11),
 `ma_price` integer,
 `ma_closeflg` varchar(19),
