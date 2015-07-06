@@ -27,6 +27,7 @@ $ua_id = $user->getUAid();
 
 $room = new Room($rm_id);
 if(ROOM_AUCTION !== $room->getStat()){
+    var_dump($room->getStat());
     Page::complete(SEE_OTHER);
     return;
 }

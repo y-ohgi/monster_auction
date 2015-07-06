@@ -161,9 +161,6 @@ class Auction{
         $stmt->execute();
         $ruid = $stmt->fetchColumn();
 
-        var_dump($ruid);
-        var_dump($this->_rm_id);
-
         
         $sql = "UPDATE monster_auction SET ma_ru_id = :ru_id, ma_closeflg = true WHERE ma_id = (SELECT ra_ma_id FROM room_auction WHERE ra_rm_id = :rm_id);";
         $stmt = Dbh::get()->prepare($sql);
@@ -205,16 +202,14 @@ class Auction{
     // 新規登録 登録できるmonster_auctionが無かったらfalseを返す
     public function setAuction(){
         //$sql = "SELECT ma_id FROM monster_auction WHERE ma_ra_id = (SELECT ra_id FROM room_auction WHERE ra_rm_id = :rm_id LIMIT 1) AND ma_closeflg IS NULL;";
-        $sql = "SELECT * FROM monster_auction WHERE ma_ru_id IS NULL;";
+        $sql = "SELECT ma_id FROM monster_auction WHERE ma_closeflg IS NULL AND ma_ra_id = (SELECT ra_id FROM room_auction WHERE ra_rm_id = :rm_id LIMIT 1);";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
         $stmt->execute();
         $maid = $stmt->fetchColumn();
 
-        if(isset($maid)){
-            // maテーブルに レコードが残っていなかったら
-            return false;
-        }else{
+        if($maid){
+            //var_dump($maid);
             $sql = "UPDATE room_auction SET ra_ma_id = :ma_id, ra_time = :time WHERE ra_rm_id = :rm_id;";
             $stmt = Dbh::get()->prepare($sql);
             $stmt->bindValue(":ma_id", $maid, PDO::PARAM_INT);
@@ -223,6 +218,10 @@ class Auction{
             $stmt->execute();
 
             return true;
+        }else{
+            // maテーブルに レコードが残っていなかったら
+            //var_dump($maid);
+            return false;
         }
         
     }

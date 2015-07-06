@@ -15,15 +15,15 @@ use Carbon\Carbon;
 
 
 $uuid = $_POST['uuid'];
-$price = $_POST['price'];
-$ma_id = $_POST['auction_id'];
+$price = intval($_POST['price']);
+$ma_id = intval($_POST['auction_id']);
 
 $user = new User($uuid);
 if($user->authUser()){
     Page::complete(BAD_REQUEST);
     return;
 }
-// $um_id = $user->getId();
+$um_id = $user->getId();
 $rm_id = $user->getRMid();
 $ru_id = $user->getRUid();
 //$ua_id = $user->getUAid();
@@ -53,10 +53,11 @@ try{
         return;
     }
     
+
     // 現在額の確認
     $sql = "SELECT ma_id, ma_price FROM room_auction LEFT JOIN monster_auction ON room_auction.ra_ma_id = monster_auction.ma_id WHERE ra_rm_id = :rm_id;";
     $stmt = Dbh::get()->prepare($sql);
-    $stmt->bindValue(":um_id", $um_id, PDO::PARAM_INT);
+    $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -67,14 +68,15 @@ try{
         Page::complete(BAD_REQUEST);
         return;
     }
-    
+    /*
     // 入札
     $sql = "UPDATE monster_auction SET ma_price = :price, ma_ru_id = :ru_id;";
     $stmt = Dbh::get()->prepare($sql);
     $stmt->bindValue(":price", $price, PDO::PARAM_INT);
     $stmt->bindValue(":ru_id", $ru_id, PDO::PARAM_INT);
     $stmt->execute();
-    
+
+    /**/
     //Dbh::get()->rollback();
     Dbh::get()->commit();
 }catch(Exception $e){
