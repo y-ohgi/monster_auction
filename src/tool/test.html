@@ -9,6 +9,8 @@
 <body>
 <!-- <h1>TEST TOOL</h1> -->
 
+<button id="sChange">change server</button>
+	
 <table>
 	<tr>
 		<th>新規登録</th>
@@ -81,12 +83,22 @@
 <script type="text/javascript">
 
 var DOMAIN = "http://localhost:8888/serv_monster_auction/src/";
+var DOMAINS = ["http://localhost:8888/serv_monster_auction/src/", "http://y-ohgi.net/"];
 var UUID = null;
 
-$.get(DOMAIN+"getuuid.php", function(data){
-	$("#tbl_uuid").html(data);
-	UUID = data;
+var cflg = 0;
+$("#sChange").click(function(e){
+	cflg++;
+	DOMAIN = DOMAINS[cflg%DOMAINS.length];
+	getUuid();
 });
+function getUuid(){
+	$.get(DOMAIN+"getuuid.php", function(data){
+		$("#tbl_uuid").html(data);
+		UUID = data;
+	});
+}
+getUuid();
 
 $("#signup").click(function(e){
 	e.preventDefault();
