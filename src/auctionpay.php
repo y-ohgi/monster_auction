@@ -65,12 +65,17 @@ try{
     $nowprice = $row['ma_price'];
     $maid = $row['ma_id'];
 
-    if($nowprice < $price){
-        if($maid != $ma_id){
-            echo "現在額がうんぬん";
-            Page::complete(BAD_REQUEST);
-            return;
-        }
+    //    if($nowprice > $price || $maid != $ma_id){ // ;;
+    if($maid != $ma_id){
+        Page::complete(BAD_REQUEST);
+        return;
+
+    }
+    if($nowprice > $price){
+        //echo "現在額がうんぬん";
+        Page::complete(BAD_REQUEST);
+        return;
+
     }
 
     // 入札
