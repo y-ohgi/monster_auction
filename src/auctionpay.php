@@ -49,6 +49,7 @@ try{
     $stmt->execute();
     $money = $stmt->fetchColumn();
     if($money < $price){
+        echo "入札金足りないのん";
         Page::complete(BAD_REQUEST);
         return;
     }
@@ -64,11 +65,14 @@ try{
     $nowprice = $row['ma_price'];
     $maid = $row['ma_id'];
 
-    if($nowprice < $price || $maid != $ma_id){
-        Page::complete(BAD_REQUEST);
-        return;
+    if($nowprice < $price){
+        if($maid != $ma_id){
+            echo "現在額がうんぬん";
+            Page::complete(BAD_REQUEST);
+            return;
+        }
     }
-    /*
+
     // 入札
     $sql = "UPDATE monster_auction SET ma_price = :price, ma_ru_id = :ru_id;";
     $stmt = Dbh::get()->prepare($sql);

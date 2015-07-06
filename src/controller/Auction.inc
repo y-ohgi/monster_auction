@@ -180,7 +180,7 @@ class Auction{
 
     // 購入確定
     public function cmpBuy(){
-        $sql = "UPDATE monster_auction SET ma_closeflg = true WHERE ma_id = (SELECT ra_ma_id FROM room_auction WHERE ra_rm_id = :rm_id);";
+        $sql = "UPDATE monster_auction SET ma_closeflg = true WHERE ma_id = (SELECT ra_ma_id FROM room_auction WHERE ra_rm_id = :rm_id LIMIT 1);";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -191,7 +191,7 @@ class Auction{
         $stmt->execute();
         $ruid = $stmt->fetchColumn();
         
-        $sql = "UPDATE room_user SET ru_money = ru_money - (SELECT ma_price FROM monster_auction WHERE ma_ru_id = :ru_id) WHERE ru_id = :ru_id;";
+        $sql = "UPDATE room_user SET ru_money = ru_money - (SELECT ma_price FROM monster_auction WHERE ma_ru_id = :ru_id LIMIT 1) WHERE ru_id = :ru_id;";
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":ru_id", $ruid, PDO::PARAM_INT);
         $stmt->execute();

@@ -64,7 +64,12 @@ try{
         if(false === $auction->setAuction()){
             // TODO:ステータスをかえる
             //   + timer_room_auction分加えて equipに変更？
-            // 
+            $sql = "UPDATE room_master SET rm_stat = :stat WHERE rm_id = :rm_id;";
+            $stmt = Dbh::get()->prepare($sql);
+            $stmt->bindValue(":rm_id", $rm_id, PDO::PARAM_INT);
+            $stmt->bindValue(":stat", ROOM_EQUIP, PDO::PARAM_STR);
+            $stmt->execute();
+          
             Page::complete(SEE_OTHER);
             return;
         }

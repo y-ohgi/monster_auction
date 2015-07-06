@@ -8,7 +8,8 @@ define("ROOM_WAIT", "wait");
 define("ROOM_AUCTIONWAIT", "auctionwait");
 // オークション状態
 define("ROOM_AUCTION", "auction");
-
+// 装備購入
+define("ROOM_EQUIP", "equip");
 
 
 
