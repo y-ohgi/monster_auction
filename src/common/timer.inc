@@ -15,5 +15,5 @@ define('TIMER_USER_TIMEOUT', 30);
 define('TIMER_ROOM_WAIT2AUCTION', 10);
 
 // 1オークション時間
-//define('TIMER_AUCTION', 35);
-define('TIMER_AUCTION', 120);
+define('TIMER_AUCTION', 35);
+//define('TIMER_AUCTION', 120);
