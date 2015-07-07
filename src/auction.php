@@ -92,7 +92,7 @@ try{
     return;
 }
 
-Page::complete(SUCCESS, $timer, $auction_id, $monster_id, $user_id, $price);
+Page::complete(SUCCESS, intval($timer), intval($auction_id), intval($monster_id), intval($user_id), intval($price));
 
 
 

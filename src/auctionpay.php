@@ -48,8 +48,7 @@ try{
     $stmt->bindValue(":um_id", $um_id, PDO::PARAM_INT);
     $stmt->execute();
     $money = $stmt->fetchColumn();
-    if($money < $price){
-        echo "入札金足りないのん";
+    if($money < $price || $money !== USER_MONEY){
         Page::complete(BAD_REQUEST);
         return;
     }
