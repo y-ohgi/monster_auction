@@ -109,7 +109,16 @@ function getUuid(){
 		UUID = data;
 	});
 }
+function tmpStrs(){
+	var length = 8
+	var name = Math.random().toString(36).slice(-length);
+
+	$("#name").val(name);
+}
+
 getUuid();
+
+
 
 $("#signup").click(function(e){
 	e.preventDefault();

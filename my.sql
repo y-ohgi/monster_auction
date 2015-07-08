@@ -83,7 +83,7 @@ CREATE TABLE `room_equip` (
 `re_id` int(11) NOT NULL AUTO_INCREMENT,
 `re_rm_id` int(11),
 
--- `re_time` datetime,
+--`re_time` datetime,
 
 `re_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(`re_id`),
@@ -93,20 +93,29 @@ UNIQUE KEY `re_rm_id` (`re_rm_id`)
 -- 装備アイテム一覧
 CREATE TABLE `item_master` (
 `im_id` int(11) NOT NULL AUTO_INCREMENT,
-`im_name` varchar(255),
-`im_price` int(11),
+`im_name` varchar(255) DEFAULT NULL,
+`im_price` int(11) DEFAULT NULL,
 `im_desc` text,
-
-`im_site` int(19),
+`im_site` int(19) DEFAULT NULL,
 
 `im_type_hu` int(19) DEFAULT NULL, -- ヒューマンが装備可能か
 `im_type_be` int(19) DEFAULT NULL, -- 野獣が装備可能か
 `im_type_dr` int(19) DEFAULT NULL, -- ドラゴンが装備可能か
 `im_type_gi` int(19) DEFAULT NULL, -- 巨大が装備可能か
+PRIMARY KEY (`im_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8
 
--- その他能力値
-PRIMARY KEY(`im_id`),
-UNIQUE KEY `im_site` (`im_site`)
+-- ユーザー作成モンスターデータ
+CREATE TABLE `monster_wrap` (
+`mw_id` int(11) NOT NULL AUTO_INCREMENT,
+`mw_mm_id` int(11),
+`mw_ru_id` int(11),
+
+`mw_wep_id` int(11),
+`mw_gua_id` int(11),
+`mw_acc_id` int(11),
+
+PRIMARY KEY(`mw_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 
