@@ -55,8 +55,19 @@
 	</tr>
 	<tr>
 		<th>オークション情報取得</th>
-			<td><input type="text" placeholder="オークションid" id="auctionresult_id" />
+		<td><input type="text" placeholder="オークションid" id="auctionresult_id" />
 			<input type="submit" id="auctionresult"/></td>
+	</tr>
+	<tr>
+		<th>装備一覧取得</th>
+		<td><input type="submit" id="equiplist"/></td>
+	</tr>
+	<tr>
+		<th>装備購入</th>
+		<td><input type="text" placeholder="武器id" id="wep_id" />
+			<input type="text" placeholder="防具id" id="guard_id" />
+			<input type="text" placeholder="アクセid" id="acce_id" />
+			<input type="submit" id="buyequip"/></td>
 	</tr>
 </table>
 
@@ -329,6 +340,57 @@ $("#auctionresult").click(function(e){
 		data:{
 			uuid: UUID,
 			auction_id: auction_id
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#equiplist").click(function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		url: DOMAIN+"equip.php",
+		method: 'POST',
+		data:{
+			uuid: UUID
+		},
+		dataType:'json',
+		success: function(data) {
+			console.log(data)
+			$("#result").val(JSON.stringify(data).toString());
+		},
+		error: function(data){
+			console.log(data);
+			$("#result").val(data.responseText);
+			alert("error");
+		}
+	});
+});
+
+$("#buyequip").click(function(e){
+	e.preventDefault();
+	
+	var wep_id = ~~($("#wep_id").val());
+	var guard_id = ~~($("#guard_id").val());
+	var acce_id = ~~($("#acce_id").val());
+	
+	$.ajax({
+		url: DOMAIN+"buyequip.php",
+		method: 'POST',
+		data:{
+			uuid: UUID,
+			weapon_id: wep_id,
+			guard_id: guard_id,
+			accessory_id: acce_id
 		},
 		dataType:'json',
 		success: function(data) {

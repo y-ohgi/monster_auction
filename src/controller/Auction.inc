@@ -116,6 +116,7 @@ class Auction{
         $time = $row['ra_time'];
 
         if(is_null($maid)){
+            $sql = "INSERT";
             return false;
         }
         

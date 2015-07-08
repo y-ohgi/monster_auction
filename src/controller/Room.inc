@@ -63,6 +63,12 @@ class Room{
         $stmt = Dbh::get()->prepare($sql);
         $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
         $stmt->execute();
+
+        // アイテム購入テーブルを削除
+        $sql = "DELETE FROM room_equip WHERE re_rm_id = :rm_id;";
+        $stmt = Dbh::get()->prepare($sql);
+        $stmt->bindValue(":rm_id", $this->_rm_id, PDO::PARAM_INT);
+        $stmt->execute();
         
     }
     

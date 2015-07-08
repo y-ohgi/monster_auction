@@ -50,7 +50,8 @@ CREATE TABLE `room_auction` (
 `ra_time` datetime, -- オークション系各種処理の開始時間
 
 `ra_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`ra_id`)
+PRIMARY KEY (`ra_id`),
+UNIQUE KEY `ra_rm_id` (`ra_rm_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 CREATE TABLE `monster_auction` (
@@ -64,7 +65,8 @@ CREATE TABLE `monster_auction` (
 `ma_closeflg` varchar(19),
 
 `ma_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`ma_id`)
+PRIMARY KEY (`ma_id`),
+UNIQUE KEY `ma_ra_id` (`ma_ra_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
 
 CREATE TABLE `monster_master` (
@@ -75,6 +77,18 @@ CREATE TABLE `monster_master` (
 -- その他能力値
 PRIMARY KEY(`mm_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+-- 装備購入シーンテーブル
+CREATE TABLE `room_equip` (
+`re_id` int(11) NOT NULL AUTO_INCREMENT,
+`re_rm_id` int(11),
+
+-- `re_time` datetime,
+
+`re_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY(`re_id`),
+UNIQUE KEY `re_rm_id` (`re_rm_id`)
+);
 
 -- 装備アイテム一覧
 CREATE TABLE `item_master` (
@@ -91,10 +105,9 @@ CREATE TABLE `item_master` (
 `im_type_gi` int(19) DEFAULT NULL, -- 巨大が装備可能か
 
 -- その他能力値
-PRIMARY KEY(`im_id`)
+PRIMARY KEY(`im_id`),
+UNIQUE KEY `im_site` (`im_site`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
-
-
 
 
 CREATE TABLE `room_tour` (

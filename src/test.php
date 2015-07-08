@@ -11,10 +11,22 @@ require_once(ROOT_DIR. 'controller/Auction.inc');
 
 require_once(ROOT_DIR. 'controller/Room.inc');
 
-$rm_id = 4;
 
-$room = new Room($rm_id);
-$room->updPpl();
+require_once(ROOT_DIR . '../lib/Carbon/Carbon.php');
+use Carbon\Carbon;
+
+phpinfo();
+
+
+//$timer = Carbon::now()->diffInSeconds(Carbon::now());
+//echo Carbon::now('America/Vancouver')->diffInSeconds(Carbon::now('Europe/London'));
+//echo "$timer \n";
+
+
+// $rm_id = 4;
+
+// $room = new Room($rm_id);
+// $room->updPpl();
 
 
 
