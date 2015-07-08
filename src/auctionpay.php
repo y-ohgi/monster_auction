@@ -36,6 +36,7 @@ if(ROOM_AUCTION !== $room->getStat()){
 
 $response = array(
     "status"=>null
+    ,"msg"=>null
 );
 Page::setResponse($response);
 
@@ -48,8 +49,8 @@ try{
     $stmt->bindValue(":um_id", $um_id, PDO::PARAM_INT);
     $stmt->execute();
     $money = $stmt->fetchColumn();
-    if($money < $price || $money !== USER_MONEY){
-        Page::complete(BAD_REQUEST);
+    if($money < $price){
+        Page::complete(BAD_REQUEST, "ユーザーの所持金が指定金より低い $money < $price");
         return;
     }
     
@@ -66,13 +67,12 @@ try{
 
     //    if($nowprice > $price || $maid != $ma_id){ // ;;
     if($maid != $ma_id){
-        Page::complete(BAD_REQUEST);
+        Page::complete(BAD_REQUEST,"オークションid が違う $maid != $ma_id");
         return;
 
     }
     if($nowprice > $price){
-        //echo "現在額がうんぬん";
-        Page::complete(BAD_REQUEST);
+        Page::complete(BAD_REQUEST, "現在額がうんぬん $nowprice > $price");
         return;
 
     }

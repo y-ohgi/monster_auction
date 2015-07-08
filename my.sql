@@ -60,7 +60,7 @@ CREATE TABLE `monster_auction` (
 `ma_ru_id` int(11),
 
 `ma_mm_id` int(11),
-`ma_price` integer,
+`ma_price` int(11),
 `ma_closeflg` varchar(19),
 
 `ma_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -70,11 +70,31 @@ PRIMARY KEY (`ma_id`)
 CREATE TABLE `monster_master` (
 `mm_id` int(11) NOT NULL AUTO_INCREMENT,
 `mm_name` varchar(255),
-`mm_price` integer, -- デフォルトの金額
+`mm_price` int(11), -- デフォルトの金額
 
 -- その他能力値
 PRIMARY KEY(`mm_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+-- 装備アイテム一覧
+CREATE TABLE `item_master` (
+`im_id` int(11) NOT NULL AUTO_INCREMENT,
+`im_name` varchar(255),
+`im_price` int(11),
+`im_desc` text,
+
+`im_site` int(19),
+
+`im_type_hu` int(19) DEFAULT NULL, -- ヒューマンが装備可能か
+`im_type_be` int(19) DEFAULT NULL, -- 野獣が装備可能か
+`im_type_dr` int(19) DEFAULT NULL, -- ドラゴンが装備可能か
+`im_type_gi` int(19) DEFAULT NULL, -- 巨大が装備可能か
+
+-- その他能力値
+PRIMARY KEY(`im_id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+
 
 
 CREATE TABLE `room_tour` (

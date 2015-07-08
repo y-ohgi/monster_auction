@@ -82,7 +82,7 @@ try{
     /**/
     Dbh::get()->commit();
 }catch(Exception $e){
-    //Dbh::get()->rollback();
+    Dbh::get()->rollback();
     Page::complete(SERVER_ERROR);
     echo $e->getMessage();
     return;
